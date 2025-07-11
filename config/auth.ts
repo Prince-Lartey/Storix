@@ -12,7 +12,7 @@ async function getUserWithRoles(userId: string) {
   const user = await db.user.findUnique({
     where: { id: userId },
     include: {
-      roles: true, // Include roles relation
+      roles: true,
     },
   });
 
@@ -47,6 +47,13 @@ export const authOptions: NextAuthOptions = {
           where: { roleName: "user" },
         });
 
+        const org = await db.organisation.create({
+            data: {
+                name: "Default Organisation",
+                slug: "default-organisation"
+            }
+        })
+
         return {
           id: profile.id.toString(),
           name: profile.name || profile.login,
@@ -57,6 +64,8 @@ export const authOptions: NextAuthOptions = {
           email: profile.email,
           roles: defaultRole ? [defaultRole] : [],
           permissions: defaultRole ? defaultRole.permissions : [], // Include permissions from default role
+          orgId: org.id,
+          orgName: org.name
         };
       },
       clientId: process.env.GITHUB_CLIENT_ID || "",
@@ -69,6 +78,13 @@ export const authOptions: NextAuthOptions = {
           where: { roleName: "user" },
         });
 
+        const org = await db.organisation.create({
+            data: {
+                name: "Default Organisation",
+                slug: "default-organisation"
+            }
+        })
+
         return {
           id: profile.sub,
           name: `${profile.given_name} ${profile.family_name}`,
@@ -79,6 +95,8 @@ export const authOptions: NextAuthOptions = {
           email: profile.email,
           roles: defaultRole ? [defaultRole] : [],
           permissions: defaultRole ? defaultRole.permissions : [], // Include permissions from default role
+          orgId: org.id,
+          orgName: org.name
         };
       },
       clientId: process.env.GOOGLE_CLIENT_ID || "",
@@ -137,6 +155,8 @@ export const authOptions: NextAuthOptions = {
             email: existingUser.email,
             roles: existingUser.roles,
             permissions: uniquePermissions,
+            orgId: existingUser.orgId,
+            orgName: existingUser.orgName
           };
         } catch (error) {
           throw { error: "Something went wrong", status: 401 };
@@ -187,6 +207,8 @@ export const authOptions: NextAuthOptions = {
         token.lastName = user.lastName;
         token.phone = user.phone;
         token.roles = user.roles;
+        token.orgId = user.orgId;
+        token.orgName = user.orgName;
         token.permissions = user.permissions;
       } else {
         // For subsequent requests, refresh roles and permissions
@@ -194,6 +216,8 @@ export const authOptions: NextAuthOptions = {
         if (userData) {
           token.roles = userData.roles;
           token.permissions = userData.permissions;
+          token.orgId = userData.orgId;
+          token.orgName = userData.orgName;
         }
       }
       return token;
@@ -209,6 +233,8 @@ export const authOptions: NextAuthOptions = {
         session.user.phone = token.phone;
         session.user.roles = token.roles;
         session.user.permissions = token.permissions;
+        session.user.orgId = token.orgId;
+        session.user.orgName = token.orgName;
       }
       return session;
     },
