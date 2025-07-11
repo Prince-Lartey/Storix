@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import { PasswordProps } from "@/components/Forms/ChangePasswordForm";
 import { Resend } from "resend";
 import { generateToken } from "@/lib/token";
+import { OrgData } from "@/components/Forms/RegisterForm";
 // import { generateNumericToken } from "@/lib/token";
 const resend = new Resend(process.env.RESEND_API_KEY);
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -23,96 +24,105 @@ const DEFAULT_USER_ROLE = {
   ],
 };
 
-export async function createUser(data: UserProps) {
-  const { email, password, firstName, lastName, name, phone, image } = data;
+export async function createUser(data: UserProps, orgData: OrgData) {
+    const { email, password, firstName, lastName, name, phone, image } = data;
 
-  try {
-    // Use a transaction for atomic operations
-    return await db.$transaction(async (tx) => {
-      // Check for existing users
-      const existingUserByEmail = await tx.user.findUnique({
-        where: { email },
-      });
+    try {
+        // Use a transaction for atomic operations
+        return await db.$transaction(async (tx) => {
+            // Check for existing users
+            const existingUserByEmail = await tx.user.findUnique({
+                where: { email },
+            });
 
-      const existingUserByPhone = await tx.user.findUnique({
-        where: { phone },
-      });
+            const existingUserByPhone = await tx.user.findUnique({
+                where: { phone },
+            });
 
-      if (existingUserByEmail) {
-        return {
-          error: `This email ${email} is already in use`,
-          status: 409,
-          data: null,
-        };
-      }
-
-      if (existingUserByPhone) {
-        return {
-          error: `This Phone number ${phone} is already in use`,
-          status: 409,
-          data: null,
-        };
-      }
-
-      // Find or create default role
-      let defaultRole = await tx.role.findFirst({
-        where: { roleName: DEFAULT_USER_ROLE.roleName },
-      });
-
-      // Create default role if it doesn't exist
-      if (!defaultRole) {
-        defaultRole = await tx.role.create({
-          data: DEFAULT_USER_ROLE,
-        });
-      }
-
-      // Hash password
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      // Create user with role
-
-        const org = await db.organisation.create({
-            data: {
-                name: "Default Organisation",
-                slug: "default-organisation"
+            if (existingUserByEmail) {
+                return {
+                    error: `This email ${email} is already in use`,
+                    status: 409,
+                    data: null,
+                };
             }
-        })
 
-      const newUser = await tx.user.create({
-        data: {
-          email,
-          password: hashedPassword,
-          firstName,
-          lastName,
-          name,
-          orgId: org.id,
-          orgName: org.name,
-          phone,
-          image,
-          roles: {
-            connect: {
-              id: defaultRole.id,
-            },
-          },
-        },
-        include: {
-          roles: true, // Include roles in the response
-        },
-      });
+            if (existingUserByPhone) {
+                return {
+                    error: `This Phone number ${phone} is already in use`,
+                    status: 409,
+                    data: null,
+                };
+            }
 
-      return {
-        error: null,
-        status: 200,
-        data: newUser,
-      };
-    });
+            // Create Organisation
+            const existingOrganisation = await tx.organisation.findUnique({
+                where: { slug: orgData.slug },
+            });
+
+            if (existingOrganisation) {
+                return {
+                    error: `This Organisation Name ${orgData.name} is already taken`,
+                    status: 409,
+                    data: null,
+                };
+            }
+
+            const org = await db.organisation.create({
+                data: orgData
+            })
+
+            // Find or create default role
+            let defaultRole = await tx.role.findFirst({
+                where: { roleName: DEFAULT_USER_ROLE.roleName },
+            });
+
+            // Create default role if it doesn't exist
+            if (!defaultRole) {
+                defaultRole = await tx.role.create({
+                    data: DEFAULT_USER_ROLE,
+                });
+            }
+
+            // Hash password
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            // Create user with role
+            const newUser = await tx.user.create({
+                data: {
+                    email,
+                    password: hashedPassword,
+                    firstName,
+                    lastName,
+                    name,
+                    orgId: org.id,
+                    orgName: org.name,
+                    phone,
+                    image,
+                    roles: {
+                        connect: {
+                            id: defaultRole.id,
+                        },
+                    },
+                },
+                include: {
+                    roles: true, // Include roles in the response
+                },
+            });
+
+            return {
+                error: null,
+                status: 200,
+                data: {id: newUser.id},
+            };
+        });
   } catch (error) {
-    console.error("Error creating user:", error);
-    return {
-      error: `Something went wrong, Please try again`,
-      status: 500,
-      data: null,
-    };
+        console.error("Error creating user:", error);
+        return {
+            error: `Something went wrong, Please try again`,
+            status: 500,
+            data: null,
+        };
   }
 }
 export async function getAllMembers() {
