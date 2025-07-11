@@ -128,25 +128,25 @@ export default function SiteHeader({ session }: { session: Session | null }) {
                                         <div className="grid gap-4 md:grid-cols-3 ">
                                             {features.map((feature, index) => (
                                                 <Link
-                                                key={index}
-                                                href={`/feature/${feature.title
-                                                    .toLowerCase()
-                                                    .replace(/\s+/g, "-")}`}
-                                                className="block group"
+                                                    key={index}
+                                                    href={`/feature/${feature.title
+                                                        .toLowerCase()
+                                                        .replace(/\s+/g, "-")}`}
+                                                    className="block group"
                                                 >
-                                                <div className="flex items-start gap-4">
-                                                    <div className="p-2 bg-muted rounded-md group-hover:bg-muted/80">
-                                                    <feature.icon className="h-6 w-6 text-blue-500" />
+                                                    <div className="flex items-start gap-4">
+                                                        <div className="p-2 bg-muted rounded-md group-hover:bg-muted/80">
+                                                            <feature.icon className="h-6 w-6 text-blue-500" />
+                                                        </div>
+                                                        <div>
+                                                            <h5 className="font-medium mb-1 group-hover:text-blue-500">
+                                                                {feature.title}
+                                                            </h5>
+                                                            <p className="text-sm text-muted-foreground line-clamp-2">
+                                                                {feature.description}
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                    <h5 className="font-medium mb-1 group-hover:text-blue-500">
-                                                        {feature.title}
-                                                    </h5>
-                                                    <p className="text-sm text-muted-foreground line-clamp-2">
-                                                        {feature.description}
-                                                    </p>
-                                                    </div>
-                                                </div>
                                                 </Link>
                                             ))}
                                         </div>
@@ -180,13 +180,13 @@ export default function SiteHeader({ session }: { session: Session | null }) {
                                     </NavigationMenuLink>
                                 </Link>
                             </NavigationMenuItem>
-                            <NavigationMenuItem>
+                            {/* <NavigationMenuItem>
                                 <Link href="/agency" legacyBehavior passHref>
                                     <NavigationMenuLink className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
                                         Agency
                                     </NavigationMenuLink>
                                 </Link>
-                            </NavigationMenuItem>
+                            </NavigationMenuItem> */}
                         </NavigationMenuList>
                     </NavigationMenu>
                 </div>
