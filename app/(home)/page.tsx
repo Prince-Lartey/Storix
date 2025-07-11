@@ -10,7 +10,6 @@ import {
 import React from "react";
 import PricingCard from "@/components/frontend/single-tier-pricing";
 import FAQ from "@/components/frontend/FAQ";
-import CustomizationCard from "@/components/frontend/customisation-card";
 import Image from "next/image";
 import { BorderBeam } from "@/components/magicui/border-beam";
 import FeatureTabs from "@/components/frontend/SmoothTabs";
@@ -89,9 +88,9 @@ export default async function page() {
                 <div className="py-8">
                     <PricingCard />
                 </div>
-                <div className="py">
+                {/* <div className="py">
                     <CustomizationCard theme="light" />
-                </div>
+                </div> */}
             </div>
             <FAQ />
         </section>

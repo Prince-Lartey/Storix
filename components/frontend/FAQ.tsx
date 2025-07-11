@@ -3,62 +3,63 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, HelpCircle, Minus, Plus } from "lucide-react";
 import Link from "next/link";
+
 const faqs = [
   {
-    question: "What is the difference between a starter kit and a boilerplate?",
+    question: "What makes Storix different from other inventory management systems?",
     answer:
-      "A starter kit is typically more opinionated and comes with pre-built features, components, and design decisions, making it ready for immediate use in production. A boilerplate, on the other hand, is usually a bare-bones template with basic setup and structure, requiring more customization and development work. Our starter kit includes fully implemented features like authentication, payment systems, and user management, saving you significant development time.",
+      "Storix offers a comprehensive, user-friendly solution with real-time inventory tracking, automated order and warehouse management, advanced reporting, and customizable automation workflows. Unlike basic inventory tools, Storix integrates seamlessly with e-commerce platforms and provides a modern interface with dedicated support through our community channels.",
   },
   {
-    question:
-      "How is supastarter different from other starter kits or boilerplates?",
+    question: "How do I get started with Storix?",
     answer:
-      "Our starter kit stands out by providing a complete, production-ready solution with fully implemented features rather than just templates. We include advanced functionality like user authentication, payment processing, email systems, and responsive UI components. Additionally, we maintain clean, well-documented code, regular updates, and provide dedicated support through our Discord community.",
+      "After subscribing to a Basic or Pro plan, you'll receive access to our cloud-based platform. We provide detailed setup guides, video tutorials, and sample data to help you configure inventory tracking, order management, and warehouse settings. Our support team is available to assist with onboarding via email or our Discord community.",
   },
   {
-    question: "How do I get access to the boilerplate code?",
+    question: "Can Storix integrate with my existing e-commerce or accounting software?",
     answer:
-      "After purchasing, you'll receive immediate access to the complete source code via GitHub. You'll be invited to our private repository where you can clone or download the code. We'll also send you detailed documentation and setup instructions to your registered email address.",
+      "Yes, Storix supports integrations with popular platforms like Shopify, WooCommerce, Amazon, QuickBooks, and Xero. Our API allows for custom integrations, and our automation workflows ensure seamless data syncing across your tools, reducing manual work and errors.",
   },
   {
-    question: "Is the boilerplate being maintained regularly?",
+    question: "Is Storix regularly updated and secure?",
     answer:
-      "Yes, we actively maintain and update the codebase with regular commits, bug fixes, and feature improvements. Our team consistently reviews dependencies, implements security patches, and adds new features based on user feedback and modern development practices. You can check our changelog for detailed update history.",
+      "Absolutely. We regularly update Storix with new features, performance improvements, and security patches. Our platform uses encrypted data storage, role-based access control, and secure APIs to protect your inventory and business data. Check our changelog for the latest updates.",
   },
   {
-    question: "What if I find a bug?",
+    question: "What kind of support is available if I encounter issues?",
     answer:
-      "If you encounter any bugs, you can report them through our GitHub issues or Discord community. Our development team actively monitors these channels and typically responds within 24-48 hours. We prioritize bug fixes and regularly release updates to ensure the stability of the codebase.",
+      "We offer dedicated support through our Discord community, email, and in-app help center. Pro plan users get priority support with responses within 24 hours. You can also access our extensive documentation and community forums for troubleshooting and best practices.",
   },
   {
-    question: "What do I get for my money?",
+    question: "What features are included in the Basic and Pro plans?",
     answer:
-      "Your purchase includes: Full source code access, Regular updates and improvements, Premium UI components, Authentication system, Payment integration, Email templates, Documentation, APIs, Database schema, Admin dashboard, and Customer support through our Discord community. You also get lifetime access to all future updates within the current major version.",
+      "The Basic plan includes real-time inventory tracking, order management, single-location warehouse management, and basic reporting. The Pro plan adds multi-location warehouse management, advanced reporting, and unlimited automation workflows. Both plans include lifetime updates and access to our support community.",
   },
   {
-    question: "What am I allowed to do with the starter template?",
+    question: "Can I use Storix for multiple warehouses or businesses?",
     answer:
-      "You can use the starter kit to create unlimited personal or commercial projects. Each license is valid for one developer and can be used to create multiple end products. You cannot resell the source code as-is or redistribute it as another starter kit/boilerplate. The code must be part of a larger application.",
+      "Yes, the Pro plan supports multi-location warehouse management, allowing you to track inventory across multiple sites. You can manage multiple businesses under one account, with role-based access to ensure team members only see relevant data. The Basic plan is limited to a single warehouse.",
   },
   {
-    question: "Can I see what I am getting before purchasing?",
+    question: "Can I try Storix before committing to a plan?",
     answer:
-      "Yes, you can explore our detailed feature list, view our live demo, and check our documentation to understand the full scope of what's included. We also provide code samples and component previews on our website. Additionally, we offer a 14-day money-back guarantee if you're not satisfied with the product.",
+      "Yes, we offer a 14-day free trial for both Basic and Pro plans, giving you full access to all features. You can explore inventory tracking, order management, and reporting with sample data or your own. No credit card is required to start the trial.",
   },
   {
-    question: "Can I get a refund?",
+    question: "What is your refund policy?",
     answer:
-      "Yes, we offer a 14-day money-back guarantee. If you're not satisfied with the starter kit, simply contact our support team within 14 days of purchase, and we'll process your refund. No questions asked. However, refunds cannot be issued if you've already used the code in a production project.",
+      "We offer a 14-day money-back guarantee for both plans. If Storix doesn't meet your needs, contact our support team within 14 days of purchase for a full refund, no questions asked. Refunds are not available if the platform has been used extensively in a production environment.",
   },
 ];
+
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="py-16 bg-green-50">
+    <section className={`py-16 ${openIndex === null ? "bg-blue-50" : "bg-purple-50"}`}>
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold text-green-600 mb-2 uppercase tracking-wide">
+          <p className="text-sm font-semibold text-blue-600 mb-2 uppercase tracking-wide">
             Frequently Asked Questions
           </p>
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -80,9 +81,9 @@ export default function FAQ() {
                     {faq.question}
                   </h3>
                   {openIndex === index ? (
-                    <Minus className="w-5 h-5 text-green-600" />
+                    <Minus className="w-5 h-5 text-purple-600" />
                   ) : (
-                    <Plus className="w-5 h-5 text-green-600" />
+                    <Plus className="w-5 h-5 text-blue-600" />
                   )}
                 </div>
               </button>
@@ -108,7 +109,7 @@ export default function FAQ() {
           </div>
           <Link
             href="/#contact"
-            className="bg-lime-400 text-green-900 px-6 py-2 rounded-full hover:bg-lime-500 transition duration-300 flex items-center"
+            className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-purple-500 transition duration-300 flex items-center"
           >
             Contact us
             <ArrowRight className="w-4 h-4 ml-2" />

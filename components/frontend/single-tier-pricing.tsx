@@ -74,7 +74,7 @@ const PricingCards = ({ theme = "light" }) => {
                 isDark
                   ? "bg-slate-800/50 border-slate-700"
                   : "bg-white border-slate-200"
-              } rounded-2xl shadow-lg ${
+              } rounded-none shadow-lg ${
                 plan.name === "Pro" ? "border-2 border-blue-500" : ""
               }`}
             >
