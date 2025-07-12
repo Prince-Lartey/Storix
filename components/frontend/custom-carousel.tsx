@@ -4,19 +4,19 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const carouselItems = [
   {
-    image: "/images/slide-1.jpg",
-    title: "Simple Monthly Savings,",
-    subtitle: "Join Ronix Savings Group",
+    image: "/images/image-1.jpg",
+    title: "Track Your Stock",
+    subtitle: "Effortless Inventory Management"
   },
   {
-    image: "/images/slide-2.jpg",
-    title: "Healthy Habits,",
-    subtitle: "Financial & Physical Wellness",
+    image: "/images/image-2.jpg",
+    title: "Real-Time Updates",
+    subtitle: "Stay Informed on Stock Levels",
   },
   {
-    image: "/images/slide-3.jpg",
-    title: "End Year Celebration,",
-    subtitle: "Reap Your Rewards in December",
+    image: "/images/image-3.jpg",
+    title: "Streamlined Operations",
+    subtitle: "Optimize Your Inventory Flow",
   },
 ];
 

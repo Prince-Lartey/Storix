@@ -8,6 +8,7 @@ import { PasswordProps } from "@/components/Forms/ChangePasswordForm";
 import { Resend } from "resend";
 import { generateToken } from "@/lib/token";
 import { OrgData } from "@/components/Forms/RegisterForm";
+import { generateOTP } from "@/lib/generateOTP";
 // import { generateNumericToken } from "@/lib/token";
 const resend = new Resend(process.env.RESEND_API_KEY);
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -87,6 +88,9 @@ export async function createUser(data: UserProps, orgData: OrgData) {
             // Hash password
             const hashedPassword = await bcrypt.hash(password, 10);
 
+            // Generate a 6-figure otp
+            const token = generateOTP()
+
             // Create user with role
             const newUser = await tx.user.create({
                 data: {
@@ -98,6 +102,7 @@ export async function createUser(data: UserProps, orgData: OrgData) {
                     orgId: org.id,
                     orgName: org.name,
                     phone,
+                    token,
                     image,
                     roles: {
                         connect: {
@@ -110,10 +115,18 @@ export async function createUser(data: UserProps, orgData: OrgData) {
                 },
             });
 
+            // Send a verification email
+            const { data, error } = await resend.emails.send({
+                from: "NextAdmin <info@desishub.com>",
+                to: email,
+                subject: "Reset Password Request",
+                react: ResetPasswordEmail({ userFirstname, resetPasswordLink }),
+            });
+
             return {
                 error: null,
                 status: 200,
-                data: {id: newUser.id},
+                data: {id: newUser.id, email: newUser.email},
             };
         });
   } catch (error) {
@@ -125,6 +138,7 @@ export async function createUser(data: UserProps, orgData: OrgData) {
         };
   }
 }
+
 export async function getAllMembers() {
   try {
     const members = await db.user.findMany({
@@ -139,6 +153,7 @@ export async function getAllMembers() {
     return 0;
   }
 }
+
 export async function getAllUsers() {
   try {
     const users = await db.user.findMany({
@@ -185,6 +200,7 @@ export async function getUserById(id: string) {
     console.log(error);
   }
 }
+
 export async function sendResetLink(email: string) {
   try {
     const user = await db.user.findUnique({
@@ -272,6 +288,7 @@ export async function updateUserPassword(id: string, data: PasswordProps) {
     console.log(error);
   }
 }
+
 export async function resetUserPassword(
   email: string,
   token: string,
@@ -309,4 +326,27 @@ export async function resetUserPassword(
   } catch (error) {
     console.log(error);
   }
+}
+
+export async function verifyOTP(userId: string, otp: string){
+    try {
+        const user = await db.user.findUnique({
+            where: {
+                id: userId,
+            }
+        })
+        if (user?.token !== otp) {
+            return {
+                status: 403
+            }
+        } else {
+            return {
+                status: 200
+            }
+        }
+    } catch (error) {
+        return {
+            status: 403
+        }
+    }
 }

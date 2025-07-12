@@ -4,20 +4,17 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { UserProps } from "@/types/types";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import TextInput from "../FormInputs/TextInput";
 import PasswordInput from "../FormInputs/PasswordInput";
 import SubmitButton from "../FormInputs/SubmitButton";
 import { createUser } from "@/actions/users";
 import CustomCarousel from "../frontend/custom-carousel";
-import { Button } from "../ui/button";
-import { signIn } from "next-auth/react";
-import { FaGithub, FaGoogle } from "react-icons/fa";
 import Logo from "../global/Logo";
 import FormSelectInput from "../FormInputs/FormSelectInput";
 import countries from "@/countries";
 import { generateSlug } from "@/lib/generateSlug";
+import { toast } from "sonner";
 
 export type OrgData = {
     name: string;
@@ -60,8 +57,10 @@ export default function RegisterForm() {
                 setEmailErr(res.error);
             } else if (res.status === 200) {
                 setLoading(false);
-                toast.success("Account Created successfully");
-                router.push("/");
+                toast.success("Account Created successfully", {
+                    description: "Your account has been created, pending email verification",}
+                );
+                router.push(`/verify/${res.data?.id}?email=${res.data?.email}`);
             } else {
                 setLoading(false);
                 toast.error("Something went wrong");
