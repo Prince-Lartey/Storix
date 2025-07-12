@@ -1,4 +1,5 @@
 "use server";
+
 import { ResetPasswordEmail } from "@/components/email-templates/reset-password";
 import { db } from "@/prisma/db";
 import { UserProps } from "@/types/types";
@@ -343,7 +344,7 @@ export async function verifyOTP(userId: string, otp: string){
                 status: 403
             }
         } 
-        
+
         const update = await db.user.update({
             where: {
                 id: user.id,

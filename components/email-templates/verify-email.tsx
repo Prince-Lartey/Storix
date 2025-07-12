@@ -16,8 +16,6 @@ interface VerifyEmailProps {
   verificationCode?: string;
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
-
 export default function VerifyEmail({
   verificationCode,
 }: VerifyEmailProps) {

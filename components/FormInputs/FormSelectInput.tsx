@@ -3,6 +3,7 @@ import AddNewButton from "@/components/FormInputs/AddNewButton";
 import React from "react";
 import Select from "react-tailwindcss-select";
 import { Option, Options } from "react-tailwindcss-select/dist/components/type";
+
 type FormSelectInputProps = {
   options: Options;
   label: string;

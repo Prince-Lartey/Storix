@@ -1,4 +1,5 @@
 "use client";
+
 import { Headset, HousePlus, Loader2, Lock, Mail, User } from "lucide-react";
 import React, { useState } from "react";
 import Link from "next/link";
@@ -15,6 +16,7 @@ import FormSelectInput from "../FormInputs/FormSelectInput";
 import countries from "@/countries";
 import { generateSlug } from "@/lib/generateSlug";
 import { toast } from "sonner";
+import { Options } from "react-tailwindcss-select/dist/components/type";
 
 export type OrgData = {
     name: string;
@@ -140,7 +142,7 @@ export default function RegisterForm() {
                     />
                     <FormSelectInput
                         label="Country"
-                        options={countries}
+                        options={countries as Options}
                         option={selectedCountry}
                         setOption={setSelectedCountry}
                     />
