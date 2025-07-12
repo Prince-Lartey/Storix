@@ -9,6 +9,7 @@ import { Resend } from "resend";
 import { generateToken } from "@/lib/token";
 import { OrgData } from "@/components/Forms/RegisterForm";
 import { generateOTP } from "@/lib/generateOTP";
+import VerifyEmail from "@/components/email-templates/verify-email";
 // import { generateNumericToken } from "@/lib/token";
 const resend = new Resend(process.env.RESEND_API_KEY);
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -116,11 +117,12 @@ export async function createUser(data: UserProps, orgData: OrgData) {
             });
 
             // Send a verification email
+            const verificationCode = newUser.token ?? ""
             const { data, error } = await resend.emails.send({
-                from: "NextAdmin <info@desishub.com>",
+                from: "Storix <pricorp.info>",
                 to: email,
-                subject: "Reset Password Request",
-                react: ResetPasswordEmail({ userFirstname, resetPasswordLink }),
+                subject: "Verify your Account",
+                react: VerifyEmail({ verificationCode }),
             });
 
             return {
