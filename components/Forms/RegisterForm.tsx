@@ -71,6 +71,7 @@ export default function RegisterForm() {
             toast.error("Its seems something is wrong, try again");
         }
     }
+
     return (
         <div className="w-full lg:grid h-screen lg:min-h-[600px] lg:grid-cols-2 relative ">
         <div className="flex items-center justify-center py-12">
@@ -133,7 +134,7 @@ export default function RegisterForm() {
                         register={register}
                         errors={errors}
                         label="Organisation Name"
-                        name="OrgName"
+                        name="orgName"
                         icon={HousePlus}
                         placeholder="eg. Wotwiwon Ltd"
                     />

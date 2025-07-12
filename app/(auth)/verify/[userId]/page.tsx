@@ -1,6 +1,3 @@
-"use client";
-
-import RegisterForm from "@/components/Forms/RegisterForm";
 import VerifyOTPForm from "@/components/Forms/VerifyOTPForm";
 import { GridBackground } from "@/components/reusable-ui/grid-background";
 import React from "react";

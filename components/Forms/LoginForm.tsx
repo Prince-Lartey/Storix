@@ -5,16 +5,15 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 
 import { LoginProps } from "@/types/types";
-import toast from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { Button } from "../ui/button";
-import { FaGithub, FaGoogle } from "react-icons/fa";
 import TextInput from "../FormInputs/TextInput";
 import PasswordInput from "../FormInputs/PasswordInput";
 import SubmitButton from "../FormInputs/SubmitButton";
 import Logo from "../global/Logo";
 import CustomCarousel from "../frontend/custom-carousel";
+import { toast } from "sonner";
+
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const {
@@ -39,7 +38,9 @@ export default function LoginForm() {
       console.log("SignIn response:", loginData);
       if (loginData?.error) {
         setLoading(false);
-        toast.error("Sign-in error: Check your credentials");
+        toast.error("Sign-in error",{
+            description: "Please Check your credentials"  
+        });
         setPassErr("Wrong Credentials, Check again");
         // setShowNotification(true);
       } else {
@@ -67,7 +68,7 @@ export default function LoginForm() {
           <div className="grid gap-2  mt-10 md:mt-0">
             <h1 className="text-3xl font-bold">Login to your Account</h1>
             <p className="text-muted-foreground text-sm">
-              Welcome Back to <span className="text-blue-600">Next Admin</span>
+              Welcome Back to <span className="text-blue-600">Storix</span>
             </p>
           </div>
           <div className="">
@@ -101,30 +102,7 @@ export default function LoginForm() {
                 />
               </div>
             </form>
-            <div className="flex items-center py-4 justify-center space-x-1 text-slate-900">
-              <div className="h-[1px] w-full bg-slate-200"></div>
-              <div className="uppercase">Or</div>
-              <div className="h-[1px] w-full bg-slate-200"></div>
-            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <Button
-                onClick={() => signIn("google")}
-                variant={"outline"}
-                className="w-full"
-              >
-                <FaGoogle className="mr-2 w-6 h-6 text-red-500" />
-                Login with Google
-              </Button>
-              <Button
-                onClick={() => signIn("github")}
-                variant={"outline"}
-                className="w-full"
-              >
-                <FaGithub className="mr-2 w-6 h-6 text-slate-900 dark:text-white" />
-                Login with Github
-              </Button>
-            </div>
             <p className="mt-6  text-sm text-gray-500">
               Not a Registered ?{" "}
               <Link

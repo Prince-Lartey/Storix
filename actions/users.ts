@@ -119,7 +119,7 @@ export async function createUser(data: UserProps, orgData: OrgData) {
             // Send a verification email
             const verificationCode = newUser.token ?? ""
             const { data, error } = await resend.emails.send({
-                from: "Storix <pricorp.info>",
+                from: "Storix <info@pricorp.info>",
                 to: email,
                 subject: "Verify your Account",
                 react: VerifyEmail({ verificationCode }),
@@ -337,15 +337,26 @@ export async function verifyOTP(userId: string, otp: string){
                 id: userId,
             }
         })
+
         if (user?.token !== otp) {
             return {
                 status: 403
             }
-        } else {
-            return {
-                status: 200
-            }
+        } 
+        
+        const update = await db.user.update({
+            where: {
+                id: user.id,
+            },
+            data: {
+                isVerfied: true,
+            },
+        });
+        
+        return {
+            status: 200
         }
+        
     } catch (error) {
         return {
             status: 403
