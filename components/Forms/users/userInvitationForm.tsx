@@ -62,6 +62,7 @@ export function UserInvitationForm({
             if (res.status !== 200) {
                 setLoading(false);
                 toast.error(res.error);
+                setErr(res.error ?? "")
                 return
             }
             setLoading(false)
@@ -78,7 +79,7 @@ export function UserInvitationForm({
                 <Button size="sm" className="h-8 gap-1">
                     <UserPlus className="h-3.5 w-3.5" />
                     <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                        Invite
+                        Invite User
                     </span>
                     <span className="md:sr-only">Add</span>
                 </Button>

@@ -65,7 +65,7 @@ export default UserInvitationEmail;
 
 const h1 = {
   color: '#1d1c1d',
-  fontSize: '36px',
+  fontSize: '32px',
   fontWeight: '700',
   margin: '30px 0',
   padding: '0',
@@ -109,7 +109,7 @@ const buttonContainer = {
 };
 
 const button = {
-  backgroundColor: '#5e6ad2',
+  backgroundColor: '#0000FF',
   borderRadius: '3px',
   fontWeight: '600',
   color: '#fff',

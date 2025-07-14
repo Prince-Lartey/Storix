@@ -415,6 +415,14 @@ export async function sendInvite(data: InviteData) {
             };
         }
 
+        // create invite
+        await db.invite.create({
+            data: {
+                email,
+                orgId
+            }
+        })
+
         // Send a verification email
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
         const linkUrl = `${baseUrl}/user-invite/${orgId}?roleId=${roleId}&&email=${email}&&orgname=${orgName}`
