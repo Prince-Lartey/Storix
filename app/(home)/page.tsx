@@ -19,7 +19,7 @@ export default async function page() {
     return (
         <section>
             <ReUsableHero
-                theme="light"
+                theme="dark"
                 announcement={{
                     text: "Introducing Storix - Smart Inventory Management",
                 }}
@@ -48,7 +48,7 @@ export default async function page() {
                     { icon: BarChart3, position: "right" },
                     { icon: TrendingUp, position: "center" },
                 ]}
-                backgroundStyle="neutral"
+                backgroundStyle="blue"
                 className="min-h-[70vh]"
                 userCount={currentUsers > 10 ? currentUsers : null}
             />
