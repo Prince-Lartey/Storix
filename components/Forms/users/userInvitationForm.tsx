@@ -52,19 +52,23 @@ export function UserInvitationForm({
             email: email,
             orgId,
             orgName,
-            roleId: selectedRole.value as string
+            roleId: selectedRole.value as string,
+            roleName: selectedRole.label
         };
         console.log(data);
         try {
             const res = await sendInvite(data);
             console.log(res);
-            if (res && res.id) {
+            if (res.status !== 200) {
                 setLoading(false);
-                router.push(`/dashboard/blogs/update/${res.id}`);
-                toast.success("Blog created successfully");
+                toast.error(res.error);
+                return
             }
+            setLoading(false)
+            toast.success("Invitation sent successfully")
         } catch (error) {
             setLoading(false);
+            toast.error("Something went wrong");
             console.log(error);
         }
     };

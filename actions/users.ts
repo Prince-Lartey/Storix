@@ -402,6 +402,19 @@ export async function sendInvite(data: InviteData) {
             };
         }
 
+        // user already invited
+        const existingInvite = await db.invite.findFirst({
+            where: { email },
+        });
+
+        if (existingInvite) {
+            return {
+                error: `This user ${email} is already invited`,
+                status: 409,
+                data: null,
+            };
+        }
+
         // Send a verification email
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
         const linkUrl = `${baseUrl}/user-invite/${orgId}?roleId=${roleId}&&email=${email}&&orgname=${orgName}`
@@ -415,7 +428,7 @@ export async function sendInvite(data: InviteData) {
         return {
             error: null,
             status: 200,
-            data: {id: newUser.id, email: newUser.email},
+            data
         };
     } catch (error) {
             console.error("Error creating user:", error);
