@@ -29,13 +29,15 @@ export const UserInvitationEmail = ({
         <Body style={main}>
             <Preview>Join {orgName} as {roleName}</Preview>
             <Container style={container}>
-                <Img
+                <Section style={imageSection}>
+                    <Img
                     src={"https://lxw8hao0qb.ufs.sh/f/43HGwtyufPQgZbGk3cSgO1dCWlyFZEtk7VJ0GbDXNcQozT2f"}
                     width="500"
                     height="150"
                     alt="Storix Logo"
-                    style={logo}
-                />
+                    style={logoStyle}
+                    />
+                </Section>
 
                 <Heading style={h1}>Join {orgName} as {roleName}</Heading>
 
@@ -97,6 +99,7 @@ const heading = {
   fontWeight: '400',
   color: '#484848',
   padding: '17px 0 0',
+  textAlign: 'center' as const,
 };
 
 const paragraph = {
@@ -139,4 +142,19 @@ const code = {
   fontSize: '21px',
   borderRadius: '4px',
   color: '#3c4149',
+};
+
+const imageSection = {
+  backgroundColor: '#252f3d',
+  display: 'flex',
+  padding: '30px 0',
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center' as const,
+};
+
+const logoStyle = {
+  display: 'block',
+  margin: '0 auto',
+  textAlign: 'center' as const,
 };

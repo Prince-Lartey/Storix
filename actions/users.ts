@@ -184,6 +184,50 @@ export async function getAllUsers() {
   }
 }
 
+export async function getOrgUsers(orgId: string) {
+    try {
+        const users = await db.user.findMany({
+            orderBy: {
+                createdAt: "desc",
+            },
+            where: {
+                orgId,
+            },
+            include: {
+                roles: true,
+            },
+        });
+        return users;
+    } catch (error) {
+        console.error("Error fetching the count:", error);
+        return 0;
+    }
+}
+
+export async function getOrgInvites(orgId: string) {
+    try {
+        const users = await db.invite.findMany({
+            orderBy: {
+                createdAt: "desc",
+            },
+            where: {
+                orgId,
+            },
+            select: {
+                id: true,
+                email: true,
+                status: true,
+                createdAt: true,
+                updatedAt: true
+            }
+        });
+        return users;
+    } catch (error) {
+        console.error("Error fetching the count:", error);
+        return 0;
+    }
+}
+
 export async function deleteUser(id: string) {
   try {
     const deleted = await db.user.delete({
