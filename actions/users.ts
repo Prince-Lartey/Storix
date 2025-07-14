@@ -12,6 +12,8 @@ import { OrgData } from "@/components/Forms/RegisterForm";
 import { generateOTP } from "@/lib/generateOTP";
 import VerifyEmail from "@/components/email-templates/verify-email";
 import { adminPermissions } from "@/config/permissions";
+import { InviteData } from "@/components/Forms/users/userInvitationForm";
+import UserInvitationEmail from "@/components/email-templates/user-invite";
 // import { generateNumericToken } from "@/lib/token";
 const resend = new Resend(process.env.RESEND_API_KEY);
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -380,5 +382,47 @@ export async function getCurrentUsersCount(){
     } catch (error) {
         console.log(error)
         return 0
+    }
+}
+
+export async function sendInvite(data: InviteData) {
+    const { email, orgId, orgName, roleId, roleName } = data;
+
+    try {
+        // Check for existing users
+        const existingUserByEmail = await db.user.findUnique({
+            where: { email },
+        });
+
+        if (existingUserByEmail) {
+            return {
+                error: `This email ${email} is already in use`,
+                status: 409,
+                data: null,
+            };
+        }
+
+        // Send a verification email
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+        const linkUrl = `${baseUrl}/user-invite/${orgId}?roleId=${roleId}&&email=${email}&&orgname=${orgName}`
+        const { data, error } = await resend.emails.send({
+            from: "Storix <info@pricorp.info>",
+            to: email,
+            subject: `Welcome to ${orgName} - ${roleName} Role Invitation`,
+            react: UserInvitationEmail({ orgName, roleName, linkUrl }),
+        });
+
+        return {
+            error: null,
+            status: 200,
+            data: {id: newUser.id, email: newUser.email},
+        };
+    } catch (error) {
+            console.error("Error creating user:", error);
+            return {
+                error: `Something went wrong, Please try again`,
+                status: 500,
+                data: null,
+            };
     }
 }

@@ -74,7 +74,7 @@ export default function Sidebar({ session, notifications = [] }: SidebarProps) {
   return (
     <div className="fixed top-0 left-0 h-full w-[220px] lg:w-[280px] border-r bg-muted/40 hidden md:block overflow-y-auto">
       <div className="flex h-full max-h-screen flex-col gap-2">
-        <div className="flex flex-shrink-0 h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+        <div className="flex flex-shrink-0 h-14 items-center border-b px-4 lg:h-[60px] lg:px-6 justify-between">
           <Logo href="/dashboard" />
           <NotificationMenu notifications={notifications} />
         </div>
