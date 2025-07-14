@@ -11,20 +11,28 @@ import { generateToken } from "@/lib/token";
 import { OrgData } from "@/components/Forms/RegisterForm";
 import { generateOTP } from "@/lib/generateOTP";
 import VerifyEmail from "@/components/email-templates/verify-email";
+import { adminPermissions } from "@/config/permissions";
 // import { generateNumericToken } from "@/lib/token";
 const resend = new Resend(process.env.RESEND_API_KEY);
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 const DEFAULT_USER_ROLE = {
-  displayName: "User",
-  roleName: "user",
-  description: "Default user role with basic permissions",
-  permissions: [
-    "dashboard.read",
-    "profile.read",
-    "profile.update",
-    "orders.read",
-  ],
+    displayName: "User",
+    roleName: "user",
+    description: "Default user role with basic permissions",
+    permissions: [
+        "dashboard.read",
+        "profile.read",
+        "profile.update",
+        "orders.read",
+    ],
+};
+
+const ADMIN_USER_ROLE = {
+    displayName: "Administrator",
+    roleName: "admin",
+    description: "Full system access",
+    permissions: adminPermissions,
 };
 
 export async function createUser(data: UserProps, orgData: OrgData) {
@@ -75,15 +83,15 @@ export async function createUser(data: UserProps, orgData: OrgData) {
                 data: orgData
             })
 
-            // Find or create default role
+            // Find or create default admin role
             let defaultRole = await tx.role.findFirst({
-                where: { roleName: DEFAULT_USER_ROLE.roleName },
+                where: { roleName: ADMIN_USER_ROLE.roleName },
             });
 
             // Create default role if it doesn't exist
             if (!defaultRole) {
                 defaultRole = await tx.role.create({
-                    data: DEFAULT_USER_ROLE,
+                    data: ADMIN_USER_ROLE,
                 });
             }
 
@@ -362,5 +370,15 @@ export async function verifyOTP(userId: string, otp: string){
         return {
             status: 403
         }
+    }
+}
+
+export async function getCurrentUsersCount(){
+    try {
+        const count = await db.user.count()
+        return count
+    } catch (error) {
+        console.log(error)
+        return 0
     }
 }

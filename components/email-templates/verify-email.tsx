@@ -28,9 +28,9 @@ export default function VerifyEmail({
           <Section style={coverSection}>
             <Section style={imageSection}>
               <Img
-                src="https://e1buy3qdez.ufs.sh/f/J6dncW3AVEReIpeN7QqqVRcvJaYSrb37TtKOLU1oWzGDlQNm"
-                width="120"
-                height="72"
+                src={"https://lxw8hao0qb.ufs.sh/f/43HGwtyufPQgZbGk3cSgO1dCWlyFZEtk7VJ0GbDXNcQozT2f"}
+                width="500"
+                height="150"
                 alt="Storix Logo"
                 style={logoStyle}
               />
@@ -43,15 +43,14 @@ export default function VerifyEmail({
                 verification code when prompted. If you don't want to
                 create an account, you can ignore this message.
               </Text>
-              <Section style={verificationSection}>
-                <Text style={verifyText}>Verification code</Text>
-                <Section style={codeContainer}>
-                  <Text style={codeText}>{verificationCode}</Text>
-                </Section>
-                <Text style={validityText}>
+
+              <Text style={verifyText}>Verification code</Text>
+
+              <Text style={codeText}>{verificationCode}</Text>
+
+              <Text style={validityText}>
                   (This code is valid for 10 minutes)
-                </Text>
-              </Section>
+              </Text>
             </Section>
             <Hr style={hrStyle} />
             <Section style={lowerSection}>
@@ -117,6 +116,7 @@ const imageSection = {
 const logoStyle = {
   display: 'block',
   margin: '0 auto',
+  textAlign: 'center' as const,
 };
 
 const h1 = {
@@ -175,6 +175,7 @@ const verifyText = {
   color: '#666',
   textTransform: 'uppercase' as const,
   letterSpacing: '1px',
+  marginBottom: '20px',
 };
 
 const codeContainer = {
@@ -194,6 +195,7 @@ const codeText = {
   color: '#2754C5',
   fontFamily: 'Monaco, Consolas, "Lucida Console", monospace',
   letterSpacing: '4px',
+  marginBottom: '20px',
 };
 
 const validityText = {
@@ -203,6 +205,7 @@ const validityText = {
   fontSize: '14px',
   color: '#666',
   fontStyle: 'italic' as const,
+  marginBottom: '20px',
 };
 
 const verificationSection = {
@@ -215,7 +218,7 @@ const verificationSection = {
 
 const mainText = { 
   ...text, 
-  marginBottom: '20px',
+  marginBottom: '30px',
   textAlign: 'center' as const,
   color: '#555',
 };

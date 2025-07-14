@@ -92,6 +92,7 @@ export default function PasswordInput({
               (errors[name] && "focus:ring-red-500 pl-8") || (icon && "pl-8")
             )}
             placeholder={placeholder || label}
+            autoComplete="new-password"
           />
           <button
             type="button"

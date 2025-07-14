@@ -1,66 +1,11 @@
+import { adminPermissions } from "@/config/permissions";
 import { db } from "./db";
 import bcrypt from "bcryptjs";
 
 // Get current year for password generation
 const currentYear = new Date().getFullYear();
 
-// Define all possible permissions
-const allPermissions = [
-  "dashboard.create",
-  "dashboard.read",
-  "dashboard.update",
-  "dashboard.delete",
 
-  "users.create",
-  "users.read",
-  "users.update",
-  "users.delete",
-
-  "roles.create",
-  "roles.read",
-  "roles.update",
-  "roles.delete",
-
-  "sales.create",
-  "sales.read",
-  "sales.update",
-  "sales.delete",
-
-  "customers.create",
-  "customers.read",
-  "customers.update",
-  "customers.delete",
-
-  "orders.create",
-  "orders.read",
-  "orders.update",
-  "orders.delete",
-
-  "reports.create",
-  "reports.read",
-  "reports.update",
-  "reports.delete",
-
-  "settings.create",
-  "settings.read",
-  "settings.update",
-  "settings.delete",
-
-  "categories.create",
-  "categories.read",
-  "categories.update",
-  "categories.delete",
-
-  "products.create",
-  "products.read",
-  "products.update",
-  "products.delete",
-
-  "blogs.create",
-  "blogs.read",
-  "blogs.update",
-  "blogs.delete",
-];
 
 // Define user role permissions (basic access)
 const userPermissions = [
@@ -144,12 +89,12 @@ async function seedDatabase() {
     // Create admin role with all permissions
     console.log("Creating admin role...");
     const adminRole = await db.role.create({
-      data: {
-        displayName: "Administrator",
-        roleName: "admin",
-        description: "Full system access",
-        permissions: allPermissions,
-      },
+        data: {
+            displayName: "Administrator",
+            roleName: "admin",
+            description: "Full system access",
+            permissions: adminPermissions,
+        },
     });
 
     // Create user role with limited permissions

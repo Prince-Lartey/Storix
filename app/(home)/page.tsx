@@ -13,9 +13,10 @@ import FAQ from "@/components/frontend/FAQ";
 import Image from "next/image";
 import { BorderBeam } from "@/components/magicui/border-beam";
 import FeatureTabs from "@/components/frontend/SmoothTabs";
+import { getCurrentUsersCount } from "@/actions/users";
 
 export default async function page() {
-    const currentUsers = 5;
+    const currentUsers = await getCurrentUsersCount();
     return (
         <section>
             <ReUsableHero
@@ -50,7 +51,7 @@ export default async function page() {
                 ]}
                 backgroundStyle="blue"
                 className="min-h-[70vh]"
-                userCount={currentUsers > 10 ? currentUsers : null}
+                userCount={currentUsers > 1 ? currentUsers : null}
             />
             {/* <GridBackground>
                 <div className="px-8 py-16 ">
