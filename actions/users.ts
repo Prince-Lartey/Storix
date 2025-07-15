@@ -207,6 +207,16 @@ export async function createInvitedUser(data: InvitedUserProps) {
                 },
             });
 
+            // update invited status
+            await db.invite.update({
+                where: {
+                    email
+                },
+                data: {
+                    status: true
+                }
+            })
+
             return {
                 error: null,
                 status: 200,
@@ -540,7 +550,7 @@ export async function sendInvite(data: InviteData) {
 
         // Send a verification email
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
-        const linkUrl = `${baseUrl}/user-invite/${orgId}?roleId=${roleId}&&email=${email}&&orgname=${orgName}`
+        const linkUrl = `${baseUrl}/user-invite/${orgId}?roleId=${roleId}&&email=${email}&&orgName=${orgName}`
         const { data, error } = await resend.emails.send({
             from: "Storix <info@pricorp.info>",
             to: email,
@@ -554,11 +564,11 @@ export async function sendInvite(data: InviteData) {
             data
         };
     } catch (error) {
-            console.error("Error creating user:", error);
-            return {
-                error: `Something went wrong, Please try again`,
-                status: 500,
-                data: null,
-            };
+        console.error("Error creating user:", error);
+        return {
+            error: `Something went wrong, Please try again`,
+            status: 500,
+            data: null,
+        };
     }
 }

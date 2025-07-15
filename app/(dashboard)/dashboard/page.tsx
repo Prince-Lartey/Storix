@@ -1,20 +1,20 @@
 import { getDashboardOverview } from "@/actions/analytics";
-import { getAllSavings } from "@/actions/savings";
 import DashboardMain from "@/components/dashboard/DashboardMain";
 import OverViewCard from "@/components/OverViewCard";
 import { DashboardWelcome } from "@/components/WelcomeBanner";
 import { getAuthenticatedUser } from "@/config/useAuth";
-import { redirect } from "next/navigation";
 
 export default async function Dashboard() {
     const analytics = (await getDashboardOverview()) || [];
     const user = await getAuthenticatedUser();
+    // console.log(user)
+
     return (
         <main>
             <div className="space-y-6">
                 <div className="space-y-1">
                     <h2 className="text-2xl font-semibold tracking-tight">
-                        {user.orgName}
+                        Org Name: {user.orgName}
                     </h2>
                     <p className="text-sm text-muted-foreground">
                         Org Id: {user.orgId}

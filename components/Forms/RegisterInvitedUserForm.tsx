@@ -4,27 +4,15 @@ import { Headset, HousePlus, Loader2, Lock, Mail, User } from "lucide-react";
 import React, { useState } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { InvitedUserProps, UserProps } from "@/types/types";
+import { InvitedUserProps } from "@/types/types";
 import { useRouter } from "next/navigation";
 import TextInput from "../FormInputs/TextInput";
 import PasswordInput from "../FormInputs/PasswordInput";
 import SubmitButton from "../FormInputs/SubmitButton";
-import { createInvitedUser, createUser } from "@/actions/users";
+import { createInvitedUser } from "@/actions/users";
 import CustomCarousel from "../frontend/custom-carousel";
 import Logo from "../global/Logo";
-import FormSelectInput from "../FormInputs/FormSelectInput";
-import countries from "@/countries";
-import { generateSlug } from "@/lib/generateSlug";
 import { toast } from "sonner";
-import { Options } from "react-tailwindcss-select/dist/components/type";
-
-export type OrgData = {
-    name: string;
-    slug: string;
-    country: string;
-    currency: string | undefined | null;
-    timezone: string | undefined
-}
 
 export default function RegisterInvitedUserForm({orgId, userEmail, orgName, roleId}: {orgId: string, userEmail: string, orgName: string, roleId: string}) {
     const [loading, setLoading] = useState(false);
@@ -53,9 +41,9 @@ export default function RegisterInvitedUserForm({orgId, userEmail, orgName, role
             } else if (res.status === 200) {
                 setLoading(false);
                 toast.success("Account Created successfully", {
-                    description: "Your account has been created, pending email verification",}
+                    description: "Your account has been created",}
                 );
-                router.push(`/verify/${res.data?.id}?email=${res.data?.email}`);
+                router.push("/login");
             } else {
                 setLoading(false);
                 toast.error("Something went wrong");

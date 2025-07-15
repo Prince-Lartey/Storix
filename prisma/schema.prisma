@@ -104,7 +104,7 @@ model Organisation {
 
 model Invite {
     id           String       @id @default(cuid())
-    email        String
+    email        String       @unique
     organisation Organisation @relation(fields: [orgId], references: [id], onDelete: Cascade)
     orgId        String
     status       Boolean      @default(false)
