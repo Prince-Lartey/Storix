@@ -2,7 +2,7 @@
 
 import { ResetPasswordEmail } from "@/components/email-templates/reset-password";
 import { db } from "@/prisma/db";
-import { UserProps } from "@/types/types";
+import { InvitedUserProps, UserProps } from "@/types/types";
 import bcrypt, { compare } from "bcryptjs";
 import { revalidatePath } from "next/cache";
 import { PasswordProps } from "@/components/Forms/ChangePasswordForm";
@@ -134,6 +134,77 @@ export async function createUser(data: UserProps, orgData: OrgData) {
                 to: email,
                 subject: "Verify your Account",
                 react: VerifyEmail({ verificationCode }),
+            });
+
+            return {
+                error: null,
+                status: 200,
+                data: {id: newUser.id, email: newUser.email},
+            };
+        });
+  } catch (error) {
+        console.error("Error creating user:", error);
+        return {
+            error: `Something went wrong, Please try again`,
+            status: 500,
+            data: null,
+        };
+  }
+}
+
+export async function createInvitedUser(data: InvitedUserProps) {
+    const { email, password, firstName, lastName, name, phone, image, orgId, roleId, orgName } = data;
+
+    try {
+        // Use a transaction for atomic operations
+        return await db.$transaction(async (tx) => {
+            // Check for existing users
+            const existingUserByEmail = await tx.user.findUnique({
+                where: { email },
+            });
+
+            const existingUserByPhone = await tx.user.findUnique({
+                where: { phone },
+            });
+
+            if (existingUserByEmail) {
+                return {
+                    error: `This email ${email} is already in use`,
+                    status: 409,
+                    data: null,
+                };
+            }
+
+            if (existingUserByPhone) {
+                return {
+                    error: `This Phone number ${phone} is already in use`,
+                    status: 409,
+                    data: null,
+                };
+            }
+
+            // Hash password
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            // Create user with role
+            const newUser = await tx.user.create({
+                data: {
+                    email,
+                    password: hashedPassword,
+                    firstName,
+                    lastName,
+                    name,
+                    orgId: orgId,
+                    orgName: orgName,
+                    phone,
+                    image,
+                    isVerfied: true,
+                    roles: {
+                        connect: {
+                            id: roleId,
+                        },
+                    },
+                },
             });
 
             return {

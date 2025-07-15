@@ -39,7 +39,7 @@ export default function InvitesTable({ data }: { data: InviteProps[] }) {
         <div className='w-full min-h-screen '>
             <div className='w-full space-y-6'>
                 {/* Header Section */}
-                <div className='bg-white rounded-xl shadow-sm border border-gray-200 p-6'>
+                <div className='bg-white shadow-sm border border-gray-200 p-6'>
                     <div className='flex items-center justify-between mb-6'>
                         <div>
                             <h1 className='text-2xl font-bold text-gray-900 flex items-center gap-2'>
@@ -48,12 +48,12 @@ export default function InvitesTable({ data }: { data: InviteProps[] }) {
                             </h1>
                         </div>
                         <div className='flex items-center gap-4'>
-                            <div className='flex items-center gap-2 bg-green-50 px-3 py-2 rounded-lg'>
-                                <div className='w-2 h-2 bg-green-500 rounded-full'></div>
+                            <div className='flex items-center gap-2 bg-green-50 px-3 py-2 '>
+                                <div className='w-2 h-2 bg-green-500 '></div>
                                 <span className='text-sm font-medium text-green-700'>{acceptedCount} Accepted</span>
                             </div>
-                            <div className='flex items-center gap-2 bg-yellow-50 px-3 py-2 rounded-lg'>
-                                <div className='w-2 h-2 bg-yellow-500 rounded-full'></div>
+                            <div className='flex items-center gap-2 bg-yellow-50 px-3 py-2 '>
+                                <div className='w-2 h-2 bg-yellow-500 '></div>
                                 <span className='text-sm font-medium text-yellow-700'>{pendingCount} Pending</span>
                             </div>
                         </div>
@@ -73,7 +73,7 @@ export default function InvitesTable({ data }: { data: InviteProps[] }) {
                 </div>
 
                 {/* Table Section */}
-                <div className='bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden'>
+                <div className='bg-white shadow-sm border border-gray-200 overflow-hidden'>
                     <div className='overflow-x-auto'>
                         <Table className='w-full'>
                             <TableHeader>
@@ -110,7 +110,7 @@ export default function InvitesTable({ data }: { data: InviteProps[] }) {
                                         >
                                             <TableCell className='py-4 px-6'>
                                                 <div className='flex items-center gap-3'>
-                                                    <div className='w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center'>
+                                                    <div className='w-8 h-8 bg-blue-100 flex items-center justify-center rounded-lg'>
                                                         <Mail className='h-4 w-4 text-blue-600' />
                                                     </div>
                                                     <span className='font-medium text-gray-900'>{invite.email}</span>
@@ -136,11 +136,11 @@ export default function InvitesTable({ data }: { data: InviteProps[] }) {
                                     <TableRow>
                                         <TableCell colSpan={3} className='h-32 text-center py-8'>
                                             <div className='flex flex-col items-center gap-3'>
-                                                <div className='w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center'>
+                                                <div className='w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center'>
                                                     <Mail className='h-6 w-6 text-gray-400' />
                                                 </div>
                                                 <div>
-                                                    <p className='text-gray-500 font-medium'>No invitations found</p>
+                                                    <p className='text-gray-500 font-medium'>No invitations sent</p>
                                                     <p className='text-gray-400 text-sm mt-1'>
                                                         {searchQuery ? 'Try adjusting your search terms' : 'Start by sending your first invitation'}
                                                     </p>
@@ -156,7 +156,7 @@ export default function InvitesTable({ data }: { data: InviteProps[] }) {
 
                 {/* Footer Stats */}
                 {filteredInvites.length > 0 && (
-                    <div className='bg-white rounded-xl shadow-sm border border-gray-200 p-4'>
+                    <div className='bg-white shadow-sm border border-gray-200 p-4'>
                         <div className='flex items-center justify-between text-sm text-gray-600'>
                             <span>Showing {filteredInvites.length} of {invites.length} invitations</span>
                             <span>

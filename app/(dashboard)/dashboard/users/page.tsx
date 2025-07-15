@@ -53,7 +53,6 @@ export default async function page() {
                 </TabsContent>
                 <TabsContent value="invites" className="space-y-8">
                     <InvitesTable data={invites}/>
-                    
                 </TabsContent>
             </Tabs>
         </div>
