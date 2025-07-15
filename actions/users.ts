@@ -93,7 +93,10 @@ export async function createUser(data: UserProps, orgData: OrgData) {
             // Create default role if it doesn't exist
             if (!defaultRole) {
                 defaultRole = await tx.role.create({
-                    data: ADMIN_USER_ROLE,
+                    data: {
+                        ...ADMIN_USER_ROLE,
+                        orgId: org.id
+                    }
                 });
             }
 
@@ -310,20 +313,33 @@ export async function getOrgInvites(orgId: string) {
 }
 
 export async function deleteUser(id: string) {
-  try {
-    const deleted = await db.user.delete({
-      where: {
-        id,
-      },
-    });
+    const user = await db.user.findUnique({
+        where: {
+            id
+        },
+        select: {
+            email: true
+        }
+    })
+    await db.invite.delete({
+        where: {
+            email: user?.email
+        }
+    })
+    try {
+        const deleted = await db.user.delete({
+            where: {
+                id,
+            },
+        });
 
-    return {
-      ok: true,
-      data: deleted,
-    };
-  } catch (error) {
-    console.log(error);
-  }
+        return {
+            ok: true,
+            data: deleted,
+        };
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 export async function getUserById(id: string) {

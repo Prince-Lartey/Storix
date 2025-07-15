@@ -94,6 +94,7 @@ async function seedDatabase() {
             roleName: "admin",
             description: "Full system access",
             permissions: adminPermissions,
+            orgId: org.id
         },
     });
 
@@ -105,6 +106,7 @@ async function seedDatabase() {
         roleName: "user",
         description: "Basic user access",
         permissions: userPermissions,
+        orgId: org.id
       },
     });
 
