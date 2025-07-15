@@ -573,12 +573,21 @@ export async function sendInvite(data: InviteData) {
             subject: `Welcome to ${orgName} - ${roleName} Role Invitation`,
             react: UserInvitationEmail({ orgName, roleName, linkUrl }),
         });
-
+        if (error) {
+            return {
+                error: "Something went wrong, Please try again",
+                status: 200,
+                data
+            };
+        }
+        revalidatePath("/dashboard/users")
+        
         return {
             error: null,
             status: 200,
             data
         };
+        
     } catch (error) {
         console.error("Error creating user:", error);
         return {

@@ -1,5 +1,6 @@
 import { getDashboardOverview } from "@/actions/analytics";
 import DashboardMain from "@/components/dashboard/DashboardMain";
+import DefaultUserDashboard from "@/components/dashboard/DefaultUserDashboard";
 import OverViewCard from "@/components/OverViewCard";
 import { DashboardWelcome } from "@/components/WelcomeBanner";
 import { getAuthenticatedUser } from "@/config/useAuth";
@@ -7,7 +8,14 @@ import { getAuthenticatedUser } from "@/config/useAuth";
 export default async function Dashboard() {
     const analytics = (await getDashboardOverview()) || [];
     const user = await getAuthenticatedUser();
-    // console.log(user)
+    const userPermission = user.permissions
+    const hasPermission = userPermission.includes("dashboard.read")
+
+    if (!hasPermission) {
+        return (
+            <DefaultUserDashboard user={user} />
+        )
+    }
 
     return (
         <main>
