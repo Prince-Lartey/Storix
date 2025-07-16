@@ -18,17 +18,12 @@ import UserInvitationEmail from "@/components/email-templates/user-invite";
 const resend = new Resend(process.env.RESEND_API_KEY);
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-const DEFAULT_USER_ROLE = {
-    displayName: "User",
-    roleName: "user",
-    description: "Default user role with basic permissions",
-    permissions: [
-        "dashboard.read",
-        "profile.read",
-        "profile.update",
-        "orders.read",
-    ],
-};
+// const DEFAULT_USER_ROLE = {
+//     displayName: "User",
+//     roleName: "user",
+//     description: "Default user role with basic permissions",
+//     permissions: userPermissions,
+// };
 
 const ADMIN_USER_ROLE = {
     displayName: "Administrator",

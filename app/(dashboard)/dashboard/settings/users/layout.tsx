@@ -2,10 +2,6 @@ import { checkPermission } from "@/config/useAuth";
 import React, { ReactNode } from "react";
 
 export default async function Layout({ children }: { children: ReactNode }) {
-  // This will automatically redirect if not authorized
-  await checkPermission("roles.read");
-
-  // Get the authenticated user
-  // const user = await getAuthenticatedUser();
+  await checkPermission("users_invites.read");
   return <div>{children}</div>;
 }

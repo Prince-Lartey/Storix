@@ -88,6 +88,37 @@ model User {
     locationName  String?
 }
 
+model Organisation {
+    id                 String    @id @default(cuid())
+    name               String
+    slug               String    @unique
+    industry           String?
+    country            String?
+    state              String?
+    address            String?
+    currency           String?
+    timezone           String?
+    inventoryStartDate DateTime?
+    fiscalYear         String?
+    users              User[]
+    invites            Invite[]
+    roles              Role[]
+    createdAt          DateTime  @default(now())
+    updatedAt          DateTime  @updatedAt
+}
+
+model Invite {
+    id           String       @id @default(cuid())
+    email        String       @unique
+    organisation Organisation @relation(fields: [orgId], references: [id], onDelete: Cascade)
+    orgId        String
+    status       Boolean      @default(false)
+    createdAt    DateTime     @default(now())
+    updatedAt    DateTime     @updatedAt
+
+    @@map("Invites")
+}
+
 model Unit {
     id        String    @id @default(cuid())
     name      String
@@ -116,31 +147,79 @@ model TaxRate {
 }
 
 model Item {
-    id              String    @id @default(cuid())
-    name            String
-    sku             String    @unique
-    barcode         String?   @unique
-    description     String?
-    categoryId      String?
-    category        Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-    unitOfMeasure   String? // unit name
-    dimensions      String?
-    weight          Float?
-    costPrice       Float     @default(0)
-    sellingPrice    Float     @default(0)
-    minStockLevel   Int       @default(0)
-    maxStockLevel   Int?
-    isActive        Boolean   @default(true)
-    isSerialTracked Boolean   @default(false)
-    createdAt       DateTime  @default(now())
-    updatedAt       DateTime? @updatedAt
-    unit            Unit?     @relation(fields: [unitId], references: [id])
-    unitId          String?
-    brand           Brand?    @relation(fields: [brandId], references: [id])
-    brandId         String?
-    taxRate         TaxRate?  @relation(fields: [taxRateId], references: [id])
-    taxRateId       String?
-    tax             Float    
+    id                String         @id @default(cuid())
+    name              String
+    sku               String         @unique
+    barcode           String?        @unique
+    description       String?
+    upc               String?
+    ean               String?
+    mpn               String?
+    isbn              String?
+    categoryId        String?
+    category          Category?      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+    unitOfMeasure     String? // unit name
+    dimensions        String?
+    weight            Float?
+    costPrice         Float          @default(0)
+    sellingPrice      Float          @default(0)
+    minStockLevel     Int            @default(0)
+    maxStockLevel     Int?
+    isActive          Boolean        @default(true)
+    isSerialTracked   Boolean        @default(false)
+    serialNumbers     SerialNumber[]
+    createdAt         DateTime       @default(now())
+    updatedAt         DateTime?      @updatedAt
+    unit              Unit?          @relation(fields: [unitId], references: [id])
+    unitId            String?
+    brand             Brand?         @relation(fields: [brandId], references: [id])
+    brandId           String?
+    taxRate           TaxRate?       @relation(fields: [taxRateId], references: [id])
+    taxRateId         String?
+    tax               Float
+    suppliers         Supplier[]     @relation("SupplierItems")
+    supplierRelations ItemSupplier[]
+}
+
+model SerialNumber {
+    id              String       @id @default(cuid())
+    serialNumber    String       @unique
+    itemId          String
+    item            Item         @relation(fields: [itemId], references: [id])
+    status          SerialStatus @default(IN_STOCK)
+    locationId      String?
+    purchaseOrderId String?
+    salesOrderId    String?
+    notes           String?
+    createdAt       DateTime     @default(now())
+    updatedAt       DateTime     @updatedAt
+}
+
+enum SerialStatus {
+    IN_STOCK
+    SOLD
+    RESERVED
+    DAMAGED
+    RETURNED
+}
+
+model ItemSupplier {
+    id               String    @id @default(cuid())
+    itemId           String
+    supplierId       String
+    item             Item      @relation(fields: [itemId], references: [id])
+    supplier         Supplier  @relation(fields: [supplierId], references: [id])
+    isPreferred      Boolean   @default(false)
+    supplierSku      String?
+    leadTime         Int? // Lead time in days
+    minOrderQty      Int? // Minimum order quantity
+    unitPrice        Float? // Price per unit from supplier
+    lastPurchaseDate DateTime?
+    notes            String?
+    createdAt        DateTime  @default(now())
+    updatedAt        DateTime? @updatedAt
+
+    @@unique([itemId, supplierId])
 }
 
 model Category {
@@ -173,35 +252,21 @@ model Location {
     users     User[]
 }
 
-model Organisation {
-    id                 String    @id @default(cuid())
-    name               String
-    slug               String    @unique
-    industry           String?
-    country            String?
-    state              String?
-    address            String?
-    currency           String?
-    timezone           String?
-    inventoryStartDate DateTime?
-    fiscalYear         String?
-    users              User[]
-    invites            Invite[]
-    roles              Role[]
-    createdAt          DateTime  @default(now())
-    updatedAt          DateTime  @updatedAt
-}
-
-model Invite {
-    id           String       @id @default(cuid())
-    email        String       @unique
-    organisation Organisation @relation(fields: [orgId], references: [id], onDelete: Cascade)
-    orgId        String
-    status       Boolean      @default(false)
-    createdAt    DateTime     @default(now())
-    updatedAt    DateTime     @updatedAt
-
-    @@map("Invites")
+model Supplier {
+    id                String         @id @default(cuid())
+    name              String
+    contactPerson     String?
+    email             String?
+    phone             String?
+    address           String?
+    taxId             String?
+    paymentTerms      String?
+    notes             String?
+    isActive          Boolean        @default(true)
+    createdAt         DateTime       @default(now())
+    updatedAt         DateTime?      @updatedAt
+    items             Item[]         @relation("SupplierItems")
+    supplierRelations ItemSupplier[]
 }
 
 model Saving {
