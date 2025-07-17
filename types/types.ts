@@ -91,3 +91,12 @@ export interface BrandDTO {
   createdAt: Date | null;
   updatedAt: Date | null;
 }
+
+export interface CategoryDTO {
+    id: string;
+    title: string;
+    description: string | null;
+    imageUrl: string | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+}

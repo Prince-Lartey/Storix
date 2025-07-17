@@ -10,8 +10,9 @@ import ImageColumn from "@/components/DataTableColumns/ImageColumn";
 import SortableColumn from "@/components/DataTableColumns/SortableColumn";
 import { ColumnDef } from "@tanstack/react-table";
 import ActionColumn from "@/components/DataTableColumns/ActionColumn";
-import { Category } from "@prisma/client";
-export const columns: ColumnDef<Category>[] = [
+import { CategoryDTO } from "@/types/types";
+
+export const columns: ColumnDef<CategoryDTO>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -35,15 +36,19 @@ export const columns: ColumnDef<Category>[] = [
     enableHiding: false,
   },
   {
+    accessorKey: "imageUrl",
+    header: "Image",
+    cell: ({ row }) => <ImageColumn row={row} accessorKey="imageUrl" />,
+  },
+  {
     accessorKey: "title",
     header: ({ column }) => <SortableColumn column={column} title="Title" />,
   },
-  {
-    accessorKey: "imageUrl",
-    header: "Category Image",
-    cell: ({ row }) => <ImageColumn row={row} accessorKey="imageUrl" />,
-  },
-
+    // {
+    //     accessorKey: "description",
+    //     header: "Description",
+    //     cell: ({ row }) => <span>{row.getValue("description")}</span>,
+    // },
   {
     accessorKey: "createdAt",
     header: "Date Created",
@@ -57,7 +62,7 @@ export const columns: ColumnDef<Category>[] = [
         <ActionColumn
           row={row}
           model="category"
-          editEndpoint={`categories/update/${category.id}`}
+          editEndpoint={""}
           id={category.id}
         />
       );
