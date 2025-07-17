@@ -14,122 +14,146 @@ import { sidebarLinks } from "@/config/sidebar";
 import { usePermission } from "@/hooks/usePermissions";
 import { UserDropdownMenu } from "../UserDropdownMenu";
 
+const OrganizationBanner = ({orgName="Org Name", orgId="org Id", userRole="Role"}) => {
+    return (
+        <div className="hidden md:flex items-center gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-3">
+                <span className="font-medium text-xl text-foreground">{orgName}</span>
+                <span className="h-6 w-px bg-border"></span>
+                <span className="text-sm">{userRole}</span>
+            </div>
+        </div>
+    )
+}
+
 export default function Navbar({ session }: { session: Session }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const { hasPermission } = usePermission();
+    const router = useRouter();
+    const pathname = usePathname();
+    const { hasPermission } = usePermission();
 
-  // Filter sidebar links based on user permissions
-  const filteredLinks = sidebarLinks.filter((link) => {
-    // Check main link permission
-    if (!hasPermission(link.permission)) {
-      return false;
+    // Filter sidebar links based on user permissions
+    const filteredLinks = sidebarLinks.filter((link) => {
+        // Check main link permission
+        if (!hasPermission(link.permission)) {
+            return false;
+        }
+
+        // If it's a dropdown, check if user has permission for any dropdown item
+        if (link.dropdown && link.dropdownMenu) {
+            return link.dropdownMenu.some((item) => hasPermission(item.permission));
+        }
+
+        return true;
+    });
+
+    // Flatten dropdown menus for mobile view
+    const mobileLinks = filteredLinks.reduce(
+        (acc, link) => {
+            // Add main link if it's not a dropdown
+            if (!link.dropdown) {
+                acc.push({
+                    title: link.title,
+                    href: link.href || "#",
+                    icon: link.icon,
+                    permission: link.permission,
+                });
+                return acc;
+            }
+
+            // Add dropdown items if user has permission
+            if (link.dropdownMenu) {
+                link.dropdownMenu.forEach((item) => {
+                    if (hasPermission(item.permission)) {
+                        acc.push({
+                            title: item.title,
+                            href: item.href,
+                            icon: link.icon,
+                            permission: item.permission,
+                        });
+                    }
+                });
+            }
+
+            return acc;
+        },
+        [] as Array<{ title: string; href: string; icon: any; permission: string }>
+    );
+
+    async function handleLogout() {
+        try {
+            await signOut();
+            router.push("/login");
+        } catch (error) {
+            console.log(error);
+        }
     }
 
-    // If it's a dropdown, check if user has permission for any dropdown item
-    if (link.dropdown && link.dropdownMenu) {
-      return link.dropdownMenu.some((item) => hasPermission(item.permission));
-    }
+    return (
+        <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-muted/60 px-4 lg:h-[60px] lg:px-6">
+            <Sheet>
+                <SheetTrigger asChild>
+                    <Button variant="outline" size="icon" className="shrink-0 md:hidden">
+                        <Menu className="h-5 w-5" />
+                        <span className="sr-only">Toggle navigation menu</span>
+                    </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="flex flex-col">
+                    <nav className="grid gap-2 text-lg font-medium">
+                        <Logo href="/dashboard" />
 
-    return true;
-  });
+                        <div className="px-3 py-2 text-sm border-b border-border mb-2">
+                            <div className="font-medium">{session?.user?.orgName}</div>
+                            <div className="text-xs text-muted-foreground">{session?.user?.orgId}</div>
+                            <div className="text-xs text-muted-foreground mt-1">{session?.user?.roles[0].displayName}</div>
+                        </div>
 
-  // Flatten dropdown menus for mobile view
-  const mobileLinks = filteredLinks.reduce(
-    (acc, link) => {
-      // Add main link if it's not a dropdown
-      if (!link.dropdown) {
-        acc.push({
-          title: link.title,
-          href: link.href || "#",
-          icon: link.icon,
-          permission: link.permission,
-        });
-        return acc;
-      }
+                        {/* Render mobile navigation links */}
+                        {mobileLinks.map((item, i) => {
+                            const Icon = item.icon;
+                            const isActive = item.href === pathname;
 
-      // Add dropdown items if user has permission
-      if (link.dropdownMenu) {
-        link.dropdownMenu.forEach((item) => {
-          if (hasPermission(item.permission)) {
-            acc.push({
-              title: item.title,
-              href: item.href,
-              icon: link.icon,
-              permission: item.permission,
-            });
-          }
-        });
-      }
+                            return (
+                                <Link
+                                    key={i}
+                                    href={item.href}
+                                    className={cn(
+                                        "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
+                                        isActive && "bg-muted text-primary"
+                                    )}
+                                >
+                                    <Icon className="h-4 w-4" />
+                                    {item.title}
+                                </Link>
+                            );
+                        })}
+                    </nav>
 
-      return acc;
-    },
-    [] as Array<{ title: string; href: string; icon: any; permission: string }>
-  );
+                    <div className="mt-auto">
+                        <Button onClick={handleLogout} size="sm" className="w-full">
+                            Logout
+                        </Button>
+                    </div>
+                </SheetContent>
+            </Sheet>
 
-  async function handleLogout() {
-    try {
-      await signOut();
-      router.push("/login");
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  return (
-    <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-muted/60 px-4 lg:h-[60px] lg:px-6">
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="outline" size="icon" className="shrink-0 md:hidden">
-            <Menu className="h-5 w-5" />
-            <span className="sr-only">Toggle navigation menu</span>
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="flex flex-col">
-          <nav className="grid gap-2 text-lg font-medium">
-            <Logo href="/dashboard" />
-
-            {/* Render mobile navigation links */}
-            {mobileLinks.map((item, i) => {
-              const Icon = item.icon;
-              const isActive = item.href === pathname;
-
-              return (
-                <Link
-                  key={i}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
-                    isActive && "bg-muted text-primary"
-                  )}
-                >
-                  <Icon className="h-4 w-4" />
-                  {item.title}
-                </Link>
-              );
-            })}
-          </nav>
-
-          <div className="mt-auto">
-            <Button onClick={handleLogout} size="sm" className="w-full">
-              Logout
-            </Button>
-          </div>
-        </SheetContent>
-      </Sheet>
-
-      <div className="w-full flex-1"></div>
-      <div className="p-4 ">
-        <UserDropdownMenu
-          username={session?.user?.name ?? ""}
-          email={session?.user?.email ?? ""}
-          avatarUrl={
-            session?.user?.image ??
-            "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%20(54)-NX3G1KANQ2p4Gupgnvn94OQKsGYzyU.png"
-          }
-        />
-      </div>
-      {/* <AvatarMenuButton session={session} /> */}
-    </header>
-  );
+            <div className="w-full flex-1">
+                <OrganizationBanner
+                    orgName={session?.user?.orgName || "Org Name"}
+                    orgId={session?.user?.orgId || "Org ID"}
+                    userRole={session?.user?.roles[0].displayName || "User Role"}
+                />
+            </div>
+            <div className="p-4 ">
+                <UserDropdownMenu
+                    username={session?.user?.name ?? ""}
+                    email={session?.user?.email ?? ""}
+                    avatarUrl={
+                        session?.user?.image ??
+                        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%20(54)-NX3G1KANQ2p4Gupgnvn94OQKsGYzyU.png"
+                    }
+                />
+            </div>
+            {/* <AvatarMenuButton session={session} /> */}
+        </header>
+    );
 }
