@@ -100,3 +100,11 @@ export interface CategoryDTO {
     createdAt: Date | null;
     updatedAt: Date | null;
 }
+
+export interface TaxDTO {
+    id: string;
+    name: string;
+    rate: number;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+}

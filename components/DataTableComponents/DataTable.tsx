@@ -86,19 +86,24 @@ export default function DataTable<TData, TValue>({
       )}
       <div className="grid grid-cols-12 gap-4">
         <div className="col-span-full md:col-span-8">
-          <SearchBar
-            data={data}
-            onSearch={setSearchResults}
-            setIsSearch={setIsSearch}
-            placeholder={searchPlaceholder}
-          />
+            <SearchBar
+                data={data}
+                onSearch={setSearchResults}
+                setIsSearch={setIsSearch}
+                placeholder={searchPlaceholder}
+            />
         </div>
-        <div className="col-span-full md:col-span-4 flex items-center gap-2">
-          <DateFilters
-            data={data}
-            onFilter={setFilteredData}
-            setIsSearch={setIsSearch}
-          />
+        <div className="flex items-center gap-2">
+            <DateRangeFilter
+                data={data}
+                onFilter={setFilteredData}
+                setIsSearch={setIsSearch}
+            />
+            <DateFilters
+                data={data}
+                onFilter={setFilteredData}
+                setIsSearch={setIsSearch}
+            />
         </div>
       </div>
 

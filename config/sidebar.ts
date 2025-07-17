@@ -268,6 +268,16 @@ export const sidebarLinks: ISidebarLink[] = [
         permission: "roles_permissions.read",
       },
       {
+        title: "Tax Rates",
+        href: "/dashboard/settings/tax-rates",
+        permission: "tax.read",
+      },
+      {
+        title: "Add Tax Rates",
+        href: "/dashboard/settings/add-tax-rates",
+        permission: "tax.create",
+      },
+      {
         title: "Company Settings",
         href: "/dashboard/settings/company",
         permission: "company_settings.read",

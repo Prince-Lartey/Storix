@@ -245,7 +245,7 @@ model Item {
     brandId           String?
     taxRate           TaxRate?       @relation(fields: [taxRateId], references: [id])
     taxRateId         String?
-    tax               Float
+    tax               Float? @default(0)
     suppliers         Supplier[]     @relation("SupplierItems")
     supplierRelations ItemSupplier[]
     orgId             String
