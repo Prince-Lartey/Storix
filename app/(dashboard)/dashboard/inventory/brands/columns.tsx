@@ -4,17 +4,17 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import ActionColumn from "@/components/DataTableColumns/ActionColumn";
 import SortableColumn from "@/components/DataTableColumns/SortableColumn";
-import { UnitDTO, UserWithRoles } from "@/types/types";
+import { BrandDTO } from "@/types/types";
 
-export const columns: ColumnDef<UnitDTO>[] = [
+export const columns: ColumnDef<BrandDTO>[] = [
     {
         accessorKey: "name",
         header: ({ column }) => <SortableColumn column={column} title="Name" />,
     },
-    {
-        accessorKey: "symbol",
-        header: ({ column }) => <SortableColumn column={column} title="Symbol" />,
-    },
+    // {
+    //     accessorKey: "symbol",
+    //     header: ({ column }) => <SortableColumn column={column} title="Symbol" />,
+    // },
 
     // {
     //   accessorKey: "createdAt",
@@ -25,13 +25,13 @@ export const columns: ColumnDef<UnitDTO>[] = [
         id: "actions",
         accessorKey: "Action",
         cell: ({ row }) => {
-            const unit = row.original;
+            const brand = row.original;
             return (
                 <ActionColumn
                     row={row}
-                    model="unit"
+                    model="brand"
                     editEndpoint={""}
-                    id={unit.id}
+                    id={brand.id}
                 />  
             );
         },

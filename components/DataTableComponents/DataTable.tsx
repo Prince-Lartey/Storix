@@ -104,7 +104,7 @@ export default function DataTable<TData, TValue>({
 
       <div className="rounded-md border">
         <Table>
-          <TableHeader>
+          <TableHeader className="text-start">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -122,12 +122,13 @@ export default function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody >
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className="px-2"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

@@ -57,19 +57,4 @@ export async function getCategoryById(id: string) {
     console.log(error);
   }
 }
-export async function deleteSaving(id: string) {
-  try {
-    const deleted = await db.saving.delete({
-      where: {
-        id,
-      },
-    });
 
-    return {
-      ok: true,
-      data: deleted,
-    };
-  } catch (error) {
-    console.log(error);
-  }
-}

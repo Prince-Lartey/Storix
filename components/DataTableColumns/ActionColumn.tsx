@@ -1,14 +1,15 @@
 "use client";
+
 import React from "react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuLabel,
+//   DropdownMenuSeparator,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,11 +21,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { MoreHorizontal, Pencil, Trash } from "lucide-react";
-import toast from "react-hot-toast";
+import { Pencil, Trash } from "lucide-react";
 import Link from "next/link";
-import { deleteSaving } from "@/actions/savings";
 import { deleteUser } from "@/actions/users";
+import { toast } from "sonner";
+import { deleteUnit } from "@/actions/units";
+import { deleteBrand } from "@/actions/brand";
 
 type ActionColumnProps = {
   row: any;
@@ -39,27 +41,32 @@ export default function ActionColumn({
   editEndpoint,
   id = "",
 }: ActionColumnProps) {
-  const isActive = row.isActive;
-  async function handleDelete() {
-    try {
-      if (model === "saving") {
-        const res = await deleteSaving(id);
-        if (res?.ok) {
-          window.location.reload();
+    const isActive = row.isActive;
+    async function handleDelete() {
+        try {
+            if (model === "unit") {
+                const res = await deleteUnit(id);
+                if (res?.ok) {
+                    toast.success(`${model} Deleted Successfully`);
+                }
+                
+            } else if (model === "user") {
+                const res = await deleteUser(id);
+                if (res?.ok) {
+                    toast.success(`${model} Deleted Successfully`);            
+                }
+            } else if (model === "brand") {
+                const res = await deleteBrand(id);
+                if (res?.ok) {
+                    toast.success(`${model} Deleted Successfully`);
+                    window.location.reload();            
+                }
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(`${model} couldn't be deleted`);
         }
-        toast.success(`${model} Deleted Successfully`);
-      } else if (model === "user") {
-        const res = await deleteUser(id);
-        if (res?.ok) {
-          window.location.reload();
-        }
-        toast.success(`${model} Deleted Successfully`);
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("Category Couldn't be deleted");
     }
-  }
     return (
         <div className="flex items-center">
             <AlertDialog>

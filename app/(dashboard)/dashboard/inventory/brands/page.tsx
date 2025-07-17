@@ -2,26 +2,26 @@ import DataTable from "@/components/DataTableComponents/DataTable";
 import { columns } from "./columns";
 import ModalTableHeader from "@/components/dashboard/Tables/ModalTableHeader";
 import { getAuthenticatedUser } from "@/config/useAuth";
-import { UnitForm } from "@/components/Forms/inventory/UnitForm";
-import { getOrgUnits } from "@/actions/units";
+import { BrandForm } from "@/components/Forms/inventory/BrandForm";
+import { getOrgBrands } from "@/actions/brand";
 
 export default async function page() {
     const user = await getAuthenticatedUser()
 
     const orgId = user.orgId    
-    const units = (await getOrgUnits(orgId)) || [];
+    const brands = (await getOrgBrands(orgId)) || [];
 
     return (
         <div className="p-8">
             <ModalTableHeader
-                title="Units"
-                linkTitle="Add Unit"
+                title="Brands"
+                linkTitle="Add Brand"
                 href="#"
-                data={units}
-                model="unit"
-                modalForm={<UnitForm orgId={orgId} />}
+                data={brands}
+                model="brand"
+                modalForm={<BrandForm orgId={orgId} />}
             />
-            <DataTable columns={columns} data={units} />
+            <DataTable columns={columns} data={brands} />
         </div>
     );
 }

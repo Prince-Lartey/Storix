@@ -328,6 +328,8 @@ export async function deleteUser(id: string) {
             },
         });
 
+        revalidatePath("/dashboard/settings/users");
+
         return {
             ok: true,
             data: deleted,
