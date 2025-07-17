@@ -1,5 +1,6 @@
 "use client";
 
+import { createUnit } from "@/actions/units";
 import TextInput from "@/components/FormInputs/TextInput";
 import { Button } from "@/components/ui/button";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,7 +17,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-type UnitFormProps = {
+export type UnitFormProps = {
     name: string;
     symbol: string;
     orgId: string;
@@ -39,7 +40,6 @@ export function UnitForm({
     });
     const [err, setErr] = useState("");
     const [loading, setLoading] = useState(false);
-    const [selectedRole, setSelectedRole] = useState<any>(roles[0]);
     const router = useRouter();
 
     const saveUnit = async (data: UnitFormProps) => {
@@ -47,16 +47,16 @@ export function UnitForm({
         data.orgId = orgId;
         console.log(data);
         try {
-            // const res = await sendInvite(data);
-            // console.log(res);
-            // if (res.status !== 200) {
-            //     setLoading(false);
-            //     toast.error(res.error);
-            //     setErr(res.error ?? "")
-            //     return
-            // }
+            const res = await createUnit(data);
+            console.log(res);
+            if (res.status !== 200) {
+                setLoading(false);
+                toast.error(res.error);
+                setErr(res.error ?? "")
+                return
+            }
             setLoading(false)
-            toast.success("Invitation sent successfully")
+            toast.success("Unit created successfully")
         } catch (error) {
             setLoading(false);
             toast.error("Something went wrong");
