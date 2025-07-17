@@ -3,7 +3,7 @@ import TableHeader from "@/components/dashboard/Tables/TableHeader";
 import { columns } from "./columns";
 import { getOrgInvites, getOrgUsers } from "@/actions/users";
 import ModalTableHeader from "@/components/dashboard/Tables/ModalTableHeader";
-import { UserInvitationForm } from "@/components/Forms/users/userInvitationForm";
+import { UserInvitationForm } from "@/components/Forms/users/UserInvitationForm";
 import { getAuthenticatedUser } from "@/config/useAuth";
 import { getOrgRoles } from "@/actions/roles";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

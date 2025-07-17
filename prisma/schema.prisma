@@ -89,9 +89,9 @@ model User {
 }
 
 model Organisation {
-    id                 String    @id @default(cuid())
+    id                 String     @id @default(cuid())
     name               String
-    slug               String    @unique
+    slug               String     @unique
     industry           String?
     country            String?
     state              String?
@@ -103,8 +103,36 @@ model Organisation {
     users              User[]
     invites            Invite[]
     roles              Role[]
-    createdAt          DateTime  @default(now())
-    updatedAt          DateTime  @updatedAt
+    createdAt          DateTime   @default(now())
+    updatedAt          DateTime   @updatedAt
+    units              Unit[]
+    categories         Category[]
+    items              Item[]
+    brands             Brand[]
+    taxRates           TaxRate[]
+    suppliers          Supplier[]
+    locations          Location[]
+}
+
+enum LocationType {
+    WAREHOUSE
+    SHOP
+    VIRTUAL
+}
+
+model Location {
+    id           String        @id @default(cuid())
+    name         String
+    type         LocationType
+    address      String?
+    email        String?
+    phone        String?
+    isActive     Boolean       @default(true)
+    createdAt    DateTime      @default(now())
+    updatedAt    DateTime      @updatedAt
+    users        User[]
+    orgId        String
+    organisation Organisation? @relation(fields: [orgId], references: [id], onDelete: Cascade)
 }
 
 model Invite {
@@ -120,30 +148,71 @@ model Invite {
 }
 
 model Unit {
-    id        String    @id @default(cuid())
-    name      String
-    symbol    String
-    items     Item[]
-    createdAt DateTime  @default(now())
-    updatedAt DateTime? @updatedAt
+    id           String        @id @default(cuid())
+    name         String
+    symbol       String
+    orgId        String
+    organisation Organisation? @relation(fields: [orgId], references: [id], onDelete: Cascade)
+    items        Item[]
+    createdAt    DateTime      @default(now())
+    updatedAt    DateTime?     @updatedAt
 }
 
 model Brand {
-    id        String    @id @default(cuid())
-    name      String
-    slug      String    @unique
-    items     Item[]
-    createdAt DateTime  @default(now())
-    updatedAt DateTime? @updatedAt
+    id           String        @id @default(cuid())
+    name         String
+    slug         String        @unique
+    items        Item[]
+    orgId        String
+    organisation Organisation? @relation(fields: [orgId], references: [id], onDelete: Cascade)
+    createdAt    DateTime      @default(now())
+    updatedAt    DateTime?     @updatedAt
 }
 
 model TaxRate {
-    id        String    @id @default(cuid())
-    name      String
-    rate      Float
-    items     Item[]
-    createdAt DateTime  @default(now())
-    updatedAt DateTime? @updatedAt
+    id           String        @id @default(cuid())
+    name         String
+    rate         Float
+    items        Item[]
+    orgId        String
+    organisation Organisation? @relation(fields: [orgId], references: [id], onDelete: Cascade)
+    createdAt    DateTime      @default(now())
+    updatedAt    DateTime?     @updatedAt
+}
+
+model Category {
+    id           String        @id @default(cuid())
+    title        String
+    slug         String        @unique
+    orgId        String
+    organisation Organisation? @relation(fields: [orgId], references: [id], onDelete: Cascade)
+    imageUrl     String?
+    description  String?
+    items        Item[]
+    createdAt    DateTime      @default(now())
+    updatedAt    DateTime?     @updatedAt
+}
+
+enum SerialStatus {
+    IN_STOCK
+    SOLD
+    RESERVED
+    DAMAGED
+    RETURNED
+}
+
+model SerialNumber {
+    id              String       @id @default(cuid())
+    serialNumber    String       @unique
+    itemId          String
+    item            Item         @relation(fields: [itemId], references: [id])
+    status          SerialStatus @default(IN_STOCK)
+    locationId      String?
+    purchaseOrderId String?
+    salesOrderId    String?
+    notes           String?
+    createdAt       DateTime     @default(now())
+    updatedAt       DateTime     @updatedAt
 }
 
 model Item {
@@ -179,28 +248,27 @@ model Item {
     tax               Float
     suppliers         Supplier[]     @relation("SupplierItems")
     supplierRelations ItemSupplier[]
+    orgId             String
+    organisation      Organisation?  @relation(fields: [orgId], references: [id], onDelete: Cascade)
 }
 
-model SerialNumber {
-    id              String       @id @default(cuid())
-    serialNumber    String       @unique
-    itemId          String
-    item            Item         @relation(fields: [itemId], references: [id])
-    status          SerialStatus @default(IN_STOCK)
-    locationId      String?
-    purchaseOrderId String?
-    salesOrderId    String?
-    notes           String?
-    createdAt       DateTime     @default(now())
-    updatedAt       DateTime     @updatedAt
-}
-
-enum SerialStatus {
-    IN_STOCK
-    SOLD
-    RESERVED
-    DAMAGED
-    RETURNED
+model Supplier {
+    id                String         @id @default(cuid())
+    name              String
+    contactPerson     String?
+    email             String?
+    phone             String?
+    address           String?
+    taxId             String?
+    paymentTerms      String?
+    notes             String?
+    isActive          Boolean        @default(true)
+    createdAt         DateTime       @default(now())
+    updatedAt         DateTime?      @updatedAt
+    items             Item[]         @relation("SupplierItems")
+    supplierRelations ItemSupplier[]
+    orgId             String
+    organisation      Organisation?  @relation(fields: [orgId], references: [id], onDelete: Cascade)
 }
 
 model ItemSupplier {
@@ -220,53 +288,6 @@ model ItemSupplier {
     updatedAt        DateTime? @updatedAt
 
     @@unique([itemId, supplierId])
-}
-
-model Category {
-    id          String    @id @default(cuid())
-    title       String
-    slug        String    @unique
-    imageUrl    String?
-    description String?
-    items       Item[]
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime? @updatedAt
-}
-
-enum LocationType {
-    WAREHOUSE
-    SHOP
-    VIRTUAL
-}
-
-model Location {
-    id        String       @id @default(cuid())
-    name      String
-    type      LocationType
-    address   String?
-    email     String?
-    phone     String?
-    isActive  Boolean      @default(true)
-    createdAt DateTime     @default(now())
-    updatedAt DateTime     @updatedAt
-    users     User[]
-}
-
-model Supplier {
-    id                String         @id @default(cuid())
-    name              String
-    contactPerson     String?
-    email             String?
-    phone             String?
-    address           String?
-    taxId             String?
-    paymentTerms      String?
-    notes             String?
-    isActive          Boolean        @default(true)
-    createdAt         DateTime       @default(now())
-    updatedAt         DateTime?      @updatedAt
-    items             Item[]         @relation("SupplierItems")
-    supplierRelations ItemSupplier[]
 }
 
 model Saving {
