@@ -2,11 +2,11 @@ import DataTable from "@/components/DataTableComponents/DataTable";
 import { columns } from "./columns";
 import { getOrgInvites, getOrgUsers } from "@/actions/users";
 import ModalTableHeader from "@/components/dashboard/Tables/ModalTableHeader";
-import { UserInvitationForm } from "@/components/Forms/users/UserInvitationForm";
 import { getAuthenticatedUser } from "@/config/useAuth";
 import { getOrgRoles } from "@/actions/roles";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import InvitesTable from "@/components/dashboard/Tables/InvitesTable";
+import UserInvitationForm from "@/components/Forms/users/UserInvitationForm";
 
 export default async function page() {
     const user = await getAuthenticatedUser()

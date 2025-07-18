@@ -25,7 +25,7 @@ export type InviteData = {
     roleName: string;
 }
 
-export function UserInvitationForm({
+export default function UserInvitationForm({
     roles,
     orgId,
     orgName
