@@ -1,4 +1,4 @@
-import { adminPermissions, userPermissions } from "@/config/permissions";
+import { adminPermissions } from "@/config/permissions";
 import { db } from "./db";
 import bcrypt from "bcryptjs";
 
@@ -92,16 +92,16 @@ async function seedDatabase() {
     });
 
     // Create user role with limited permissions
-    console.log("Creating user role...");
-    const userRole = await db.role.create({
-      data: {
-        displayName: "User",
-        roleName: "user",
-        description: "Basic user access",
-        permissions: userPermissions,
-        orgId: org.id
-      },
-    });
+    // console.log("Creating user role...");
+    // const userRole = await db.role.create({
+    //   data: {
+    //     displayName: "User",
+    //     roleName: "user",
+    //     description: "Basic user access",
+    //     permissions: userPermissions,
+    //     orgId: org.id
+    //   },
+    // });
 
     // Create admin user
     console.log("Creating admin user...");
@@ -129,21 +129,21 @@ async function seedDatabase() {
     const userPassword = `User@${currentYear}`;
     const hashedUserPassword = await bcrypt.hash(userPassword, 10);
 
-    const regularUser = await db.user.create({
-      data: {
-        email: "user@user.com",
-        name: "Regular User",
-        firstName: "Regular",
-        lastName: "User",
-        phone: "0987654321",
-        password: hashedUserPassword,
-        orgId: org.id,
-        orgName: org.name,
-        roles: {
-          connect: { id: userRole.id },
-        },
-      },
-    });
+    // const regularUser = await db.user.create({
+    //   data: {
+    //     email: "user@user.com",
+    //     name: "Regular User",
+    //     firstName: "Regular",
+    //     lastName: "User",
+    //     phone: "0987654321",
+    //     password: hashedUserPassword,
+    //     orgId: org.id,
+    //     orgName: org.name,
+    //     roles: {
+    //       connect: { id: userRole.id },
+    //     },
+    //   },
+    // });
 
     console.log("Seed completed successfully!");
     console.log("Admin credentials:", {
