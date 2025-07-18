@@ -225,6 +225,8 @@ model Item {
     ean               String?
     mpn               String?
     isbn              String?
+    imageUrl          String[]
+    thumbnail         String?
     categoryId        String?
     category          Category?      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
     unitOfMeasure     String? // unit name

@@ -12,7 +12,7 @@ export default async function page() {
     const brands = (await getOrgBrands(orgId)) || [];
 
     return (
-        <div className="p-8">
+        <div className="px-8">
             <ModalTableHeader
                 title="Brands"
                 linkTitle="Add Brand"
@@ -21,7 +21,9 @@ export default async function page() {
                 model="brand"
                 modalForm={<BrandForm orgId={orgId} />}
             />
-            <DataTable columns={columns} data={brands} />
+            <div className="py-8">
+                <DataTable columns={columns} data={brands} />
+            </div>
         </div>
     );
 }

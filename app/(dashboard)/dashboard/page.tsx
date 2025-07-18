@@ -18,7 +18,7 @@ export default async function Dashboard() {
     }
 
     return (
-        <main>
+        <main className="px-8">
             <div className="space-y-6">
                 {/* <div className="space-y-1 mb-3">
                     <h2 className="text-2xl font-semibold tracking-tight">

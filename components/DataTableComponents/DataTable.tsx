@@ -85,26 +85,26 @@ export default function DataTable<TData, TValue>({
         <SavingsSummary data={isSearch ? searchResults : filteredData} />
       )}
       <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-full md:col-span-8">
-            <SearchBar
-                data={data}
-                onSearch={setSearchResults}
-                setIsSearch={setIsSearch}
-                placeholder={searchPlaceholder}
-            />
-        </div>
-        <div className="flex items-center gap-2">
-            <DateRangeFilter
-                data={data}
-                onFilter={setFilteredData}
-                setIsSearch={setIsSearch}
-            />
-            <DateFilters
-                data={data}
-                onFilter={setFilteredData}
-                setIsSearch={setIsSearch}
-            />
-        </div>
+            <div className="col-span-full md:col-span-7">
+                <SearchBar
+                    data={data}
+                    onSearch={setSearchResults}
+                    setIsSearch={setIsSearch}
+                    placeholder={searchPlaceholder}
+                />
+            </div>
+            <div className="flex items-center gap-2 col-span-5 md:col-span-5 justify-end">
+                <DateRangeFilter
+                    data={data}
+                    onFilter={setFilteredData}
+                    setIsSearch={setIsSearch}
+                />
+                <DateFilters
+                    data={data}
+                    onFilter={setFilteredData}
+                    setIsSearch={setIsSearch}
+                />
+            </div>
       </div>
 
       <div className="rounded-md border">

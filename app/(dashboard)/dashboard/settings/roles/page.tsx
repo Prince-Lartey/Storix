@@ -12,7 +12,7 @@ export default async function page() {
     const res = await getOrgRoles(orgId);
     const roles = res.data || [];
     return (
-        <div>
+        <div className="px-8">
             <TableHeader
                 title="Roles"
                 model="role"
@@ -22,7 +22,9 @@ export default async function page() {
                 showImport={false}
             />
             {/* <CustomDataTable categories={categories} /> */}
-            <DataTable columns={columns} data={roles} />
+            <div className="py-8">
+                <DataTable columns={columns} data={roles} />
+            </div>
         </div>
     );
 }

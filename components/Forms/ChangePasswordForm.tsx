@@ -72,7 +72,7 @@ export default function ChangePasswordForm({
 
   return (
     <form className="" onSubmit={handleSubmit(onSubmit)}>
-      <h2 className="">Change Password</h2>
+      <h2 className="scroll-m-20  text-2xl font-semibold tracking-tight first:mt-0">Change Password</h2>
       <div className="grid grid-cols-12 gap-6 py-8">
         <div className="lg:col-span-8 col-span-full space-y-3">
           <Card>

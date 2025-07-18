@@ -12,7 +12,7 @@ export default async function page() {
     const units = (await getOrgUnits(orgId)) || [];
 
     return (
-        <div className="p-8">
+        <div className="px-8">
             <ModalTableHeader
                 title="Units"
                 linkTitle="Add Unit"
@@ -21,7 +21,9 @@ export default async function page() {
                 model="unit"
                 modalForm={<UnitForm orgId={orgId} />}
             />
-            <DataTable columns={columns} data={units} />
+            <div className="py-8">
+                <DataTable columns={columns} data={units} />
+            </div>
         </div>
     );
 }

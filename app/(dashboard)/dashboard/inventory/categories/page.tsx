@@ -13,7 +13,7 @@ export default async function page() {
     const categories = (await getOrgCategories(orgId)) || [];
 
     return (
-        <div className="p-8">
+        <div className="px-8">
             <ModalTableHeader
                     title="Categories"
                     linkTitle="Add Category"
