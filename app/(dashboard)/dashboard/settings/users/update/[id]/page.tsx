@@ -1,6 +1,6 @@
 import React from "react";
 import { getUserById } from "@/actions/users";
-import { getRoles } from "@/actions/roles";
+// import { getRoles } from "@/actions/roles";
 import UserForm from "@/components/Forms/UserForm";
 
 export default async function page({
@@ -10,8 +10,12 @@ export default async function page({
 }) {
   const id = (await params).id;
   const user = await getUserById(id);
-  const roles = (await getRoles()) || [];
+//   const roles = (await getRoles()) || [];
+
   return (
-    <UserForm roles={roles.data ?? []} editingId={id} initialData={user} />
+    <div>
+        
+    </div>
+    // <UserForm roles={roles.data ?? []} editingId={id} initialData={user} />
   );
 }

@@ -13,8 +13,9 @@ import { generateOTP } from "@/lib/generateOTP";
 import VerifyEmail from "@/components/email-templates/verify-email";
 import { adminPermissions } from "@/config/permissions";
 import UserInvitationEmail from "@/components/email-templates/user-invite";
-import { InviteData } from "@/components/Forms/users/UserInviteForm";
+import { InviteData } from "@/components/Forms/users/userInvitationForm";
 // import { generateNumericToken } from "@/lib/token";
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
