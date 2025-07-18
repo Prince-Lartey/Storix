@@ -70,7 +70,7 @@ export default function CategoryForm({
         router.push("/dashboard/categories");
         setImageUrl("/placeholder.svg");
       } else {
-        await createCategory(data);
+        // await createCategory(data);
         setLoading(false);
         // Toast
         toast.success("Successfully Created!");
