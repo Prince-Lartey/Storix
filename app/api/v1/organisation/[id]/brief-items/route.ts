@@ -82,9 +82,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             });
         }
     } catch (error) {
-        console.error("Error fetching items:", error);
-        return new Response(null, {
+        console.log(error);
+        return new Response(JSON.stringify({
+            data: null, 
+            error: "Failed to get item"
+        }), {
             status: 500,
+            headers: { 'Content-Type': 'application/json' }
         });
     }
 }

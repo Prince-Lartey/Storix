@@ -54,11 +54,11 @@ export const columns: ColumnDef<BriefItemDTO>[] = [
     //     header: "Description",
     //     cell: ({ row }) => <span>{row.getValue("description")}</span>,
     // },
-  {
-    accessorKey: "createdAt",
-    header: "Date Created",
-    cell: ({ row }) => <DateColumn row={row} accessorKey="createdAt" />,
-  },
+//   {
+//     accessorKey: "createdAt",
+//     header: "Date Created",
+//     cell: ({ row }) => <DateColumn row={row} accessorKey="createdAt" />,
+//   },
   {
     id: "actions",
     cell: ({ row }) => {

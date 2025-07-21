@@ -14,21 +14,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { generateSlug } from "@/lib/generateSlug";
+import { ItemFormProps } from "@/types/itemTypes";
 import { LayoutGrid, Loader2, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
-export type ItemFormProps = {
-    name: string;
-    slug: string;
-    sku: string;
-    costPrice: number;
-    sellingPrice: number;
-    orgId: string;
-    thumbnail?: string;
-}
 
 export function ItemForm({
     orgId,

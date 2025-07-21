@@ -1,10 +1,8 @@
 import { db } from "@/prisma/db";
 import { NextRequest } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> },) {
+export async function GET(request: NextRequest) {
     try {
-        const orgId = (await params).id;
-
         // Parse pagination parameter from URL
         const searchParams = request.nextUrl.searchParams;
         const pageParams = searchParams.get("page");
@@ -23,18 +21,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
                 orderBy: {
                     createdAt: "desc",
                 },
-                where: {
-                    orgId: orgId,
-                },
                 skip,
                 take: limit,
             });
 
-            const totalItems = await db.item.count({
-                where: {
-                    orgId: orgId,
-                },
-            });
+            const totalItems = await db.item.count();
 
             const totalPages = Math.ceil(totalItems / limit);
 
@@ -58,9 +49,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
                 orderBy: {
                     createdAt: "desc",
                 },
-                where: {
-                    orgId: orgId,
-                },
             });
 
             return new Response(JSON.stringify(items), {
@@ -72,7 +60,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         console.log(error);
         return new Response(JSON.stringify({
             data: null, 
-            error: "Failed to get item"
+            error: "Failed to get items"
         }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' }

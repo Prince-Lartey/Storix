@@ -1,8 +1,8 @@
 "use server";
 
-import { CategoryFormProps } from "@/components/Forms/inventory/CategoryFormModal";
-import { ItemFormProps } from "@/components/Forms/inventory/ItemForm";
+import { api } from "@/config/axios";
 import { db } from "@/prisma/db";
+import { ItemFormProps } from "@/types/itemTypes";
 import { CategoryProps } from "@/types/types";
 import { revalidatePath } from "next/cache";
 
@@ -41,17 +41,11 @@ export async function createItem(data: ItemFormProps) {
     }
 }
 
-export async function getOrgItems(orgId: string) {
+export async function getOrgItems(orgId: string, params = {}) {
     try {
-        const items = await db.item.findMany({
-            orderBy: {
-                createdAt: "desc",
-            },
-            where: {
-                orgId: orgId,
-            },
-        });
+        const res = await api.get(`/organisation/${orgId}/items`, {params})
         
+        const items = res.data
         return items;
     } catch (error) {
         console.log(error);
@@ -59,24 +53,11 @@ export async function getOrgItems(orgId: string) {
     }
 }
 
-export async function getOrgBriefItems(orgId: string) {
+export async function getOrgBriefItems(orgId: string, params = {}) {
     try {
-        const items = await db.item.findMany({
-            orderBy: {
-                createdAt: "desc",
-            },
-            where: {
-                orgId: orgId,
-            },
-            select: {
-                id: true,
-                name: true,
-                slug: true,
-                thumbnail: true,
-                createdAt: true,
-            },
-        });
+        const res = await api.get(`/organisation/${orgId}/brief-items`, {params})
         
+        const items = res.data
         return items;
     } catch (error) {
         console.log(error);
