@@ -29,6 +29,7 @@ import { deleteUnit } from "@/actions/units";
 import { deleteBrand } from "@/actions/brand";
 import { deleteCategory } from "@/actions/categories";
 import { deleteTax } from "@/actions/tax";
+import { deleteItem } from "@/actions/items";
 
 type ActionColumnProps = {
   row: any;
@@ -71,6 +72,12 @@ export default function ActionColumn({
                 }
             } else if (model === "tax") {
                 const res = await deleteTax(id);
+                if (res?.ok) {
+                    toast.success(`${model} Deleted Successfully`);
+                    window.location.reload();            
+                }
+            } else if (model === "item") {
+                const res = await deleteItem(id);
                 if (res?.ok) {
                     toast.success(`${model} Deleted Successfully`);
                     window.location.reload();            

@@ -108,3 +108,22 @@ export interface TaxDTO {
     createdAt: Date | null;
     updatedAt: Date | null;
 }
+
+export interface ItemDTO {
+    id: string;
+    name: string;
+    sku: string;
+    costPrice: number;
+    sellingPrice: number;
+    thumbnail?: string | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+}
+
+export interface BriefItemDTO {
+    id: string;
+    name: string;
+    slug: string;
+    thumbnail?: string | null;
+    createdAt: Date | null;
+}
