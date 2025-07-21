@@ -2,27 +2,85 @@ import { db } from "@/prisma/db";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> },) {
-    const orgId = (await params).id;
     try {
-        const items = await db.item.findMany({
-            orderBy: {
-                createdAt: "desc",
-            },
-            where: {
-                orgId: orgId,
-            },
-            select: {
-                id: true,
-                name: true,
-                slug: true,
-                thumbnail: true,
-                createdAt: true,
-            },
-        });
-        return new Response(JSON.stringify(items), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' }
-        });
+        const orgId = (await params).id;
+
+        // Parse pagination parameter from URL
+        const searchParams = request.nextUrl.searchParams;
+        const pageParams = searchParams.get("page");
+        const limitParams = searchParams.get("limit");
+
+        // Check if pagination is requested
+        const isPaginated = pageParams !== null && limitParams !== null;
+
+        if (isPaginated) {
+            const page = parseInt(pageParams || "1")
+            const limit = parseInt(limitParams || "10");
+            const skip = (page - 1) * limit;
+
+            const items = await db.item.findMany({
+                orderBy: {
+                    createdAt: "desc",
+                },
+                where: {
+                    orgId: orgId,
+                },
+                skip,
+                take: limit,
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    thumbnail: true,
+                    createdAt: true,
+                },
+            });
+
+            const totalItems = await db.item.count({
+                where: {
+                    orgId: orgId,
+                },
+            });
+
+            const totalPages = Math.ceil(totalItems / limit);
+
+            // Return paginated response
+            const response = {
+                data: items,
+                pagination: {
+                    total: totalItems,
+                    pages: totalPages,
+                    page,
+                    limit,
+                },
+            }
+
+            return new Response(JSON.stringify(items), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        } else {
+            const items = await db.item.findMany({
+                orderBy: {
+                    createdAt: "desc",
+                },
+                where: {
+                    orgId: orgId,
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    thumbnail: true,
+                    createdAt: true,
+                },
+            });
+            
+            return new Response(JSON.stringify(items), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
     } catch (error) {
         console.error("Error fetching items:", error);
         return new Response(null, {
