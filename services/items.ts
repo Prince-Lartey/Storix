@@ -5,19 +5,19 @@ import { ItemCreateDTO } from "@/types/itemTypes";
 // Centralized API object for all product-related server actions
 export const itemAPI = {
     getAllBrief: async (orgId: string) => {
-        const response = await getOrgBriefItems(orgId);
-        if (!response.success) {
-            throw new Error(response.error || "Failed to fetch items");
+        const res = await getOrgBriefItems(orgId);
+        if (!res.success) {
+            throw new Error(res.error || "Failed to fetch items");
         }
-        return response.data;
+        return res.data.data;
     },
 
     create: async (data: ItemCreateDTO) => {
-        const response = await createItem(data);
-        if (!response.success) {
-            throw new Error(response.error || "Failed to create product");
+        const res = await createItem(data);
+        if (!res.success) {
+            throw new Error(res.error || "Failed to create product");
         }
-        return response.data;
+        return res.data;
     },
 
     // update: async (id: string, data: UpdateProductPayload) => {
