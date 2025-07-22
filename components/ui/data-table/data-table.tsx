@@ -186,13 +186,13 @@ export default function DataTable<T>({
                 <div>
                     <CardTitle className="text-2xl">{title}</CardTitle>
                     {subtitle && <p className="text-muted-foreground mt-1">{subtitle}</p>}
-                    {filters && (
+                    {/* {filters && (
                         <p className="text-muted-foreground mt-1">
-                        {filteredData.length}{" "}
-                        {filteredData.length === 1 ? "item" : "items"}
-                        {dateFilter.option !== "lifetime" && <> | Date filter applied</>}
+                            {filteredData.length}{" "}
+                            {filteredData.length === 1 ? "item" : "items"}
+                            {dateFilter.option !== "lifetime" && <> | Date filter applied</>}
                         </p>
-                    )}
+                    )} */}
                 </div>
 
                 <div className="flex items-center gap-2">

@@ -1,10 +1,8 @@
-import React from "react";
-import { columns } from "./columns";
-import DataTable from "@/components/DataTableComponents/DataTable";
-import ModalTableHeader from "@/components/dashboard/Tables/ModalTableHeader";
+import React, { Suspense } from "react";
 import { getAuthenticatedUser } from "@/config/useAuth";
-import { ItemForm } from "@/components/Forms/inventory/ItemForm";
 import { getOrgBriefItems } from "@/actions/items";
+import { TableLoading } from "@/components/ui/data-table";
+import ItemListing from "@/components/dashboard/items/item-listing";
 
 export default async function page() {
     const user = await getAuthenticatedUser()
@@ -14,18 +12,10 @@ export default async function page() {
     const items = res.data.data
 
     return (
-        <div className="px-8">
-            <ModalTableHeader
-                title="Items"
-                linkTitle="Add Item"
-                href="#"
-                data={items}
-                model="item"
-                modalForm={<ItemForm orgId={orgId} />}
-            />
-            <div className="py-8">
-                <DataTable data={items} columns={columns} />
-            </div>
+        <div className="container py-8">
+            <Suspense fallback={<TableLoading title="Item Inventory" />}>
+                <ItemListing orgId={orgId} title="Item Inventory" />
+            </Suspense>
         </div>
     );
 }
