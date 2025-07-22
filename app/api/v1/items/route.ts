@@ -104,6 +104,7 @@ export async function POST(request: Request) {
             return new Response(JSON.stringify({
                 data: null,
                 error: "Item already exist",
+                success: false
             }),{
                 status: 400,
                 headers: { 'Content-Type': 'application/json' }
@@ -118,7 +119,8 @@ export async function POST(request: Request) {
     
         return new Response(JSON.stringify({
             data: newItem, 
-            error: null
+            error: null,
+            success: true
         }), {
             status: 201,
             headers: { 'Content-Type': 'application/json' }
@@ -127,7 +129,8 @@ export async function POST(request: Request) {
         console.log(error);
         return new Response(JSON.stringify({
             data: null, 
-            error: "Failed to create item"
+            error: "Failed to create item",
+            success: false
         }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' }

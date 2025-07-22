@@ -10,10 +10,11 @@ export async function createItem(data: ItemCreateDTO) {
     try {
         const res = await api.post("/items", data)
         
-        const item = res.data
+        const item = res.data.data
         return {
             status: 200,
             data: item,
+            success: true,
             error: null,
         };
     } catch (error) {
@@ -21,6 +22,7 @@ export async function createItem(data: ItemCreateDTO) {
         return {
             status: 500,
             data: null,
+            success: false,
             error: "Failed to create item",
         };
     }

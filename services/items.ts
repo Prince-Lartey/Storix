@@ -12,13 +12,13 @@ export const itemAPI = {
         return response.data;
     },
 
-    // create: async (data: ItemCreateDTO) => {
-    //     const response = await createItem(data);
-    //     if (!response.status || response.status !== 200) {
-    //         throw new Error(response.error || "Failed to create product");
-    //     }
-    //     return response.data;
-    // },
+    create: async (data: ItemCreateDTO) => {
+        const response = await createItem(data);
+        if (!response.success) {
+            throw new Error(response.error || "Failed to create product");
+        }
+        return response.data;
+    },
 
     // update: async (id: string, data: UpdateProductPayload) => {
     //     const response = await editProduct(id, data);
