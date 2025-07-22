@@ -1,4 +1,3 @@
-// components/ui/groups/product-listing-suspense.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -8,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Car, DollarSign } from "lucide-react";
+import { BadgeCent, Car, DollarSign } from "lucide-react";
 import { useSession } from "next-auth/react";
 import {
   DataTable,
@@ -26,8 +25,9 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useOrgItems } from "@/hooks/useItemQueries";
-import { BriefItemDTO } from "@/types/itemTypes";
+import { useCreateItem, useOrgItems } from "@/hooks/useItemQueries";
+import { BriefItemDTO, ItemCreateDTO } from "@/types/itemTypes";
+import ImageUploadButton from "@/components/FormInputs/ImageUploadButton";
 
 interface ItemListingProps {
   title: string;
@@ -36,9 +36,10 @@ interface ItemListingProps {
 
 // Form schema for editing/adding products
 const productFormSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  price: z.string().min(1, "Price is required"),
-  numberPlate: z.string().min(1, "Number plate is required"),
+    name: z.string().min(1, "Name is required"),
+    sellingPrice: z.string().min(1, "Selling price is required"),
+    sku: z.string().min(1, "SKU is required"),
+    costPrice: z.string().min(1, "Cost price is required"),
 });
 
 type ProductFormValues = z.infer<typeof productFormSchema>;
@@ -46,7 +47,7 @@ type ProductFormValues = z.infer<typeof productFormSchema>;
 export default function ItemListing({ title, orgId }: ItemListingProps) {
     // React Query hooks with Suspense - note that data is always defined
     const { items, refetch } = useOrgItems(orgId);
-    //   const createProductMutation = useCreateProduct();
+    const createItemMutation = useCreateItem();
     //   const updateProductMutation = useUpdateProduct();
     //   const deleteProductMutation = useDeleteProduct();
 
@@ -56,14 +57,16 @@ export default function ItemListing({ title, orgId }: ItemListingProps) {
     const [isExporting, setIsExporting] = useState(false);
     const [currentProduct, setCurrentProduct] = useState<BriefItemDTO | null>(null);
     const [productToDelete, setProductToDelete] = useState<BriefItemDTO | null>(null);
+    const [imageUrl, setImageUrl] = useState("https://lxw8hao0qb.ufs.sh/f/43HGwtyufPQgRXjUTpesd9co1Cv0ntbLVkT6lFqUafhBr8mQ");
 
     // Form for editing/adding products
-    const form = useForm<ProductFormValues>({
+    const form = useForm<ItemCreateDTO>({
         resolver: zodResolver(productFormSchema),
         defaultValues: {
             name: "",
-            price: "",
-            numberPlate: "",
+            sellingPrice: 0,
+            sku: "",
+            costPrice: 0,
         },
     });
 
@@ -73,20 +76,20 @@ export default function ItemListing({ title, orgId }: ItemListingProps) {
         // Adding new - reset form
         form.reset({
             name: "",
-            price: "",
-            numberPlate: "",
+            sellingPrice: 0,
+            sku: "",
+            costPrice: 0,
         });
         } else {
         // Editing existing - populate form
         form.reset({
             name: currentProduct.name,
-            price: currentProduct.sellingPrice.toString(),
-            // numberPlate: currentProduct.numberPlate,
+            sellingPrice: currentProduct.sellingPrice,
         });
         }
     }, [currentProduct, form]);
 
-  const { data: session } = useSession();
+    const { data: session } = useSession();
 
     // Format date function
     const formatDate = (date: Date | string) => {
@@ -141,10 +144,10 @@ export default function ItemListing({ title, orgId }: ItemListingProps) {
     };
 
     // Handle add new click
-    // const handleAddClick = () => {
-    //     setCurrentProduct(null);
-    //     setFormDialogOpen(true);
-    // };
+    const handleAddClick = () => {
+        setCurrentProduct(null);
+        setFormDialogOpen(true);
+    };
 
     // Handle edit click
     // const handleEditClick = (product: Product) => {
@@ -159,18 +162,34 @@ export default function ItemListing({ title, orgId }: ItemListingProps) {
     // };
 
     // Handle form submission (edit or add)
-    // const onSubmit = async (data: ProductFormValues) => {
-    //     if (!currentProduct) {
-    //         // Add new product
-    //         createProductMutation.mutate(data);
-    //     } else {
-    //         // Edit existing product
-    //         updateProductMutation.mutate({
-    //             id: currentProduct.id,
-    //             data,
-    //         });
-    //     }
-    // };
+    const onSubmit = async (data: ItemCreateDTO) => {
+        if (!currentProduct) {
+            // Add new product
+            data.orgId = orgId;
+            data.costPrice = Number(data.costPrice);
+            data.sellingPrice = Number(data.sellingPrice);
+            data.thumbnail = imageUrl;
+
+            createItemMutation.mutate(data, {
+            onSuccess: () => {
+                // Only close dialog after successful submission
+                setFormDialogOpen(false);
+                form.reset();
+                setImageUrl("https://lxw8hao0qb.ufs.sh/f/43HGwtyufPQgRXjUTpesd9co1Cv0ntbLVkT6lFqUafhBr8mQ");
+            },
+            onError: (error) => {
+                // Handle error case - keep dialog open
+                console.error('Failed to create item:', error);
+            }
+        });
+        } else {
+            // Edit existing product
+            // updateProductMutation.mutate({
+            //     id: currentProduct.id,
+            //     data,
+            // });
+        }
+    };
 
     // Handle confirming delete
     // const handleConfirmDelete = () => {
@@ -197,7 +216,7 @@ export default function ItemListing({ title, orgId }: ItemListingProps) {
         {
             header: "Name",
             accessorKey: "name",
-            cell: (row) => <span className="font-medium">{row.name}</span>,
+            cell: (row) => <span className="font-medium">{row.name.length > 25 ? `${row.name.substring(0, 25)}...` : row.name}</span>,
         },
         {
             header: "Price",
@@ -237,7 +256,7 @@ export default function ItemListing({ title, orgId }: ItemListingProps) {
                 isLoading={false} // With Suspense, we're guaranteed to have data
                 onRefresh={refetch}
                 actions={{
-                    // onAdd: handleAddClick,
+                    onAdd: handleAddClick,
                     onExport: handleExport,
                 }}
                 filters={{
@@ -246,87 +265,112 @@ export default function ItemListing({ title, orgId }: ItemListingProps) {
                     getItemDate: (item) => item.createdAt,
                 }}
                 renderRowActions={(item) => (
-                <TableActions.RowActions
-                    // onEdit={() => handleEditClick(item)}
-                    // onDelete={() => handleDeleteClick(item)}
-                    // isDeleting={
-                    //     deleteProductMutation.isPending && productToDelete?.id === item.id
-                    // }
-                />
+                    <TableActions.RowActions
+                        // onEdit={() => handleEditClick(item)}
+                        // onDelete={() => handleDeleteClick(item)}
+                        // isDeleting={
+                        //     deleteProductMutation.isPending && productToDelete?.id === item.id
+                        // }
+                    />
                 )}
             />
 
             {/* Product Form Dialog */}
-            {/* <EntityForm
+            <EntityForm
+                size="md"
                 open={formDialogOpen}
                 onOpenChange={setFormDialogOpen}
-                title={currentProduct ? "Edit Product" : "Add New Product"}
+                title={currentProduct ? "Edit item" : "Add New Item"}
                 form={form}
                 onSubmit={onSubmit}
-                isSubmitting={
-                    createProductMutation.isPending || updateProductMutation.isPending
-                }
-                submitLabel={currentProduct ? "Save Changes" : "Add Product"}
+                isSubmitting={ createItemMutation.isPending}
+                // isSubmitting={
+                //     createItemMutation.isPending || updateProductMutation.isPending
+                // }
+                submitLabel={currentProduct ? "Save Changes" : "Add Item"}
             >
                 <FormField
                     control={form.control}
                     name="name"
                     render={({ field }) => (
                         <FormItem>
-                        <FormLabel>Product Name</FormLabel>
-                        <FormControl>
-                            <Input placeholder="Enter product name" {...field} />
-                        </FormControl>
-                        <FormMessage />
+                            <FormLabel>Item Name</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Enter item name" {...field} />
+                            </FormControl>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
+                <div className="grid grid-cols-2 gap-3">
+                    <FormField
+                        control={form.control}
+                        name="costPrice"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Cost Price</FormLabel>
+                                <FormControl>
+                                    <div className="relative">
+                                        <BadgeCent className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                                        <Input placeholder="25,000" className="pl-8" {...field} />
+                                    </div>
+                                </FormControl>
+                                <FormDescription>Enter the item cost in GHS</FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
 
-                <FormField
-                    control={form.control}
-                    name="price"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Price</FormLabel>
-                        <FormControl>
-                            <div className="relative">
-                            <DollarSign className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="25,000,000" className="pl-8" {...field} />
-                            </div>
-                        </FormControl>
-                        <FormDescription>Enter the product price in UGX</FormDescription>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                    <FormField
+                        control={form.control}
+                        name="sellingPrice"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Selling Price</FormLabel>
+                                <FormControl>
+                                    <div className="relative">
+                                        <BadgeCent className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                                        <Input placeholder="25,000" className="pl-8" {...field} />
+                                    </div>
+                                </FormControl>
+                                <FormDescription>Enter the item price in GHS</FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
 
-                <FormField
-                    control={form.control}
-                    name="numberPlate"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Number Plate</FormLabel>
-                        <FormControl>
-                            <div className="relative">
-                            <Car className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input
-                                placeholder="UAX 123B"
-                                className="pl-8"
-                                {...field}
-                                disabled={!!currentProduct}
-                            />
-                            </div>
-                        </FormControl>
-                        <FormDescription>
-                            {!currentProduct
-                            ? "Enter the unique number plate for this product"
-                            : "Number plate cannot be changed after creation"}
-                        </FormDescription>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                />
-            </EntityForm> */}
+                <div className="grid grid-cols-2 gap-3 items-center">
+                    
+                        <FormField
+                            control={form.control}
+                            name="sku"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Item SKU</FormLabel>
+                                    <FormControl>
+                                        <div className="relative">
+                                            <Input placeholder="SKU-" className="" {...field} />
+                                        </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    
+                        <ImageUploadButton 
+                            title="Item Image"
+                            imageUrl={imageUrl} 
+                            setImageUrl={setImageUrl} 
+                            endpoint="itemImage"
+                        />
+                   
+                </div>
+                
+                
+
+                
+            </EntityForm>
 
             {/* Delete Confirmation Dialog */}
             {/* <ConfirmationDialog
