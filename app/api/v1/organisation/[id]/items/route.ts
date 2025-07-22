@@ -47,9 +47,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
                     page,
                     limit,
                 },
+                success: true,
             }
 
-            return new Response(JSON.stringify(items), {
+            return new Response(JSON.stringify(response), {
                 status: 200,
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -63,7 +64,19 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
                 },
             });
 
-            return new Response(JSON.stringify(items), {
+            // construct response with just data
+            const response = {
+                data: items,
+                pagination: {
+                    total: items.length,
+                    pages: 1,
+                    page: 1,
+                    limit: items.length,
+                },
+                success: true,
+            }
+
+            return new Response(JSON.stringify(response), {
                 status: 200,
                 headers: { 'Content-Type': 'application/json' }
             });

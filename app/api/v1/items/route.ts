@@ -1,4 +1,6 @@
+import { generateSlug } from "@/lib/generateSlug";
 import { db } from "@/prisma/db";
+import { ItemCreateDTO } from "@/types/itemTypes";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -31,16 +33,20 @@ export async function GET(request: NextRequest) {
 
             // Return paginated response
             const response = {
-                data: items,
-                pagination: {
-                    total: totalItems,
-                    pages: totalPages,
-                    page,
-                    limit,
+                success: true,
+                data: {
+                    data: items,
+                    pagination: {
+                        total: totalItems,
+                        pages: totalPages,
+                        page,
+                        limit,
+                    },
                 },
+                error: null
             }
 
-            return new Response(JSON.stringify(items), {
+            return new Response(JSON.stringify(response), {
                 status: 200,
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -51,7 +57,20 @@ export async function GET(request: NextRequest) {
                 },
             });
 
-            return new Response(JSON.stringify(items), {
+            // construct response with just data
+            const response = {
+                success: true,
+                data: items,
+                pagination: {
+                    total: items.length,
+                    pages: 1,
+                    page: 1,
+                    limit: items.length,
+                },
+                error: null
+            }
+
+            return new Response(JSON.stringify(response), {
                 status: 200,
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -60,7 +79,8 @@ export async function GET(request: NextRequest) {
         console.log(error);
         return new Response(JSON.stringify({
             data: null, 
-            error: "Failed to get items"
+            error: "Failed to get items",
+            success: false
         }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' }
@@ -69,15 +89,48 @@ export async function GET(request: NextRequest) {
 }
  
 export async function POST(request: Request) {
-  // Parse the request body
-  const body = await request.json();
-  const { name } = body;
- 
-  // e.g. Insert new user into your DB
-  const newUser = { id: Date.now(), name };
- 
-  return new Response(JSON.stringify(newUser), {
-    status: 201,
-    headers: { 'Content-Type': 'application/json' }
-  });
+    try {
+        // Parse the request body
+        const data: ItemCreateDTO = await request.json();
+        const slug = generateSlug(data.name)
+
+        const existingItem = await db.item.findUnique({
+            where: {
+                slug,
+            },
+        });
+
+        if (existingItem) {
+            return new Response(JSON.stringify({
+                data: null,
+                error: "Item already exist",
+            }),{
+                status: 400,
+                headers: { 'Content-Type': 'application/json' }
+            })
+        }
+
+        data.slug = slug;
+        
+        const newItem = await db.item.create({
+            data,
+        });
+    
+        return new Response(JSON.stringify({
+            data: newItem, 
+            error: null
+        }), {
+            status: 201,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    } catch (error) {
+        console.log(error);
+        return new Response(JSON.stringify({
+            data: null, 
+            error: "Failed to create item"
+        }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
 }

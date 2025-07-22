@@ -119,11 +119,3 @@ export interface ItemDTO {
     createdAt: Date | null;
     updatedAt: Date | null;
 }
-
-export interface BriefItemDTO {
-    id: string;
-    name: string;
-    slug: string;
-    thumbnail?: string | null;
-    createdAt: Date | null;
-}

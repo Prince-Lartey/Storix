@@ -46,16 +46,20 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
             // Return paginated response
             const response = {
-                data: items,
-                pagination: {
-                    total: totalItems,
-                    pages: totalPages,
-                    page,
-                    limit,
+                success: true,
+                data: {
+                    data: items,
+                    pagination: {
+                        total: totalItems,
+                        pages: totalPages,
+                        page,
+                        limit,
+                    },
                 },
+                error: null
             }
 
-            return new Response(JSON.stringify(items), {
+            return new Response(JSON.stringify(response), {
                 status: 200,
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -75,8 +79,23 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
                     createdAt: true,
                 },
             });
+
+            // construct response with just data
+            const response = {
+                success: true,
+                data: {
+                    data: items,
+                    pagination: {
+                        total: items.length,
+                        pages: 1,
+                        page: 1,
+                        limit: items.length,
+                    },
+                },
+                error: null
+            }
             
-            return new Response(JSON.stringify(items), {
+            return new Response(JSON.stringify(response), {
                 status: 200,
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -85,7 +104,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         console.log(error);
         return new Response(JSON.stringify({
             data: null, 
-            error: "Failed to get item"
+            error: "Failed to get item",
+            success: false
         }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' }

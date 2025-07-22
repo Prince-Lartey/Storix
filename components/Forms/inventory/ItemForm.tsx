@@ -13,8 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { generateSlug } from "@/lib/generateSlug";
-import { ItemFormProps } from "@/types/itemTypes";
+import { ItemCreateDTO } from "@/types/itemTypes";
 import { LayoutGrid, Loader2, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -26,20 +25,20 @@ export function ItemForm({
 }: {
     orgId: string
 }) {
-    const { register, handleSubmit, reset, formState: { errors } } = useForm<ItemFormProps>({
+    const { register, handleSubmit, reset, formState: { errors } } = useForm<ItemCreateDTO>({
 
     });
     const [err, setErr] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
-    const saveItem = async (data: ItemFormProps) => {
+    const saveItem = async (data: ItemCreateDTO) => {
         setLoading(true);
         data.orgId = orgId;
-        data.slug = generateSlug(data.name)
+        // data.slug = generateSlug(data.name)
         data.sellingPrice = Number(data.sellingPrice);
         data.costPrice = Number(data.costPrice);
-        data.thumbnail = "/placeholder.png"
+        data.thumbnail = "https://lxw8hao0qb.ufs.sh/f/43HGwtyufPQgRXjUTpesd9co1Cv0ntbLVkT6lFqUafhBr8mQ"
 
         try {
             const res = await createItem(data);

@@ -227,8 +227,10 @@ model Item {
     mpn               String?
     isbn              String?
     imageUrl          String[]
-    thumbnail         String?
+    thumbnail         String?        @default("https://lxw8hao0qb.ufs.sh/f/43HGwtyufPQgRXjUTpesd9co1Cv0ntbLVkT6lFqUafhBr8mQ")
     categoryId        String?
+    salesCount        Int            @default(0)
+    salesTotal        Float          @default(0)
     category          Category?      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
     unitOfMeasure     String? // unit name
     dimensions        String?
@@ -248,7 +250,7 @@ model Item {
     brandId           String?
     taxRate           TaxRate?       @relation(fields: [taxRateId], references: [id])
     taxRateId         String?
-    tax               Float? @default(0)
+    tax               Float?         @default(0)
     suppliers         Supplier[]     @relation("SupplierItems")
     supplierRelations ItemSupplier[]
     orgId             String

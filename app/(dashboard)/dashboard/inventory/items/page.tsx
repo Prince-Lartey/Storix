@@ -10,7 +10,8 @@ export default async function page() {
     const user = await getAuthenticatedUser()
     
     const orgId = user.orgId    
-    const items = (await getOrgBriefItems(orgId)) || [];
+    const res = (await getOrgBriefItems(orgId)) || [];
+    const items = res.data.data
 
     return (
         <div className="px-8">

@@ -1,4 +1,10 @@
-export type ItemFormProps = {
+interface ApiResponse<T> {
+    success: boolean;
+    data: T;
+    error?: string;
+}
+
+export type ItemCreateDTO = {
     name: string;
     slug: string;
     sku: string;
@@ -7,3 +13,26 @@ export type ItemFormProps = {
     orgId: string;
     thumbnail?: string;
 }
+
+export interface BriefItemDTO {
+    id: string;
+    name: string;
+    slug: string;
+    salesCount: number      
+    salesTotal: number 
+    thumbnail: string | null;
+    createdAt: Date | string;
+}
+
+interface Pagination {
+    total: number;
+    page: number;
+    limit: number;
+    pages: number;
+}
+
+interface BriefItemsData {
+    data: BriefItemDTO[];
+    pagination: Pagination;
+}
+export type BriefItemsResponse = ApiResponse<BriefItemsData>;

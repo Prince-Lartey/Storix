@@ -2,39 +2,24 @@
 
 import { api } from "@/config/axios";
 import { db } from "@/prisma/db";
-import { ItemFormProps } from "@/types/itemTypes";
+import { BriefItemsResponse, ItemCreateDTO } from "@/types/itemTypes";
 import { CategoryProps } from "@/types/types";
 import { revalidatePath } from "next/cache";
 
-export async function createItem(data: ItemFormProps) {
+export async function createItem(data: ItemCreateDTO) {
     try {
-        const existingItem = await db.item.findUnique({
-            where: {
-                slug: data.slug,
-                orgId: data.orgId,
-            },
-        });
-        if (existingItem) {
-            return {
-                status: 400,
-                data: null,
-                error: "Item already exist",
-            };
-        }
-        const newItem = await db.item.create({
-            data,
-        });
-        // console.log(newItem);
-        revalidatePath("/dashboard/inventory/items");
+        const res = await api.post("/items", data)
+        
+        const item = res.data
         return {
             status: 200,
-            data: newItem,
+            data: item,
             error: null,
         };
     } catch (error) {
         console.log(error);
         return {
-            status: 200,
+            status: 500,
             data: null,
             error: "Failed to create item",
         };
@@ -53,15 +38,26 @@ export async function getOrgItems(orgId: string, params = {}) {
     }
 }
 
-export async function getOrgBriefItems(orgId: string, params = {}) {
+export async function getOrgBriefItems(orgId: string, params = {}): Promise<BriefItemsResponse> {
     try {
         const res = await api.get(`/organisation/${orgId}/brief-items`, {params})
         
-        const items = res.data
-        return items;
+        return res.data;
     } catch (error) {
         console.log(error);
-        return null;
+        return {
+            success: false,
+            data: {
+                data: [],
+                pagination: {
+                    total: 0,
+                    pages: 0,
+                    page: 0,
+                    limit: 0,
+                },
+            },
+            error: "Failed to get brief items",
+        };
     }
 }
 

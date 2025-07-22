@@ -7,7 +7,7 @@ import ImageColumn from "@/components/DataTableColumns/ImageColumn";
 import SortableColumn from "@/components/DataTableColumns/SortableColumn";
 import { ColumnDef } from "@tanstack/react-table";
 import ActionColumn from "@/components/DataTableColumns/ActionColumn";
-import { BriefItemDTO } from "@/types/types";
+import { BriefItemDTO } from "@/types/itemTypes";
 
 export const columns: ColumnDef<BriefItemDTO>[] = [
   {
@@ -35,7 +35,7 @@ export const columns: ColumnDef<BriefItemDTO>[] = [
   {
     accessorKey: "thumbnail",
     header: "Item Image",
-    cell: ({ row }) => <ImageColumn row={row} accessorKey="imageUrl" />,
+    cell: ({ row }) => <ImageColumn row={row} accessorKey="thumbnail" />,
   },
   {
     accessorKey: "name",
