@@ -18,6 +18,8 @@ export interface BriefItemDTO {
     id: string;
     name: string;
     slug: string;
+    costPrice: number;
+    sellingPrice: number;
     salesCount: number      
     salesTotal: number 
     thumbnail: string | null;
