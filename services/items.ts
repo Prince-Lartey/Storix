@@ -1,4 +1,4 @@
-import { createItem, getOrgBriefItems, getOrgItems } from "@/actions/items";
+import { createItem, deleteItem, getOrgBriefItems, getOrgItems } from "@/actions/items";
 import { ItemCreateDTO } from "@/types/itemTypes";
 
 
@@ -28,11 +28,11 @@ export const itemAPI = {
     //     return response.data;
     // },
 
-    // delete: async (id: string) => {
-    //     const response = await deleteProduct(id);
-    //     if (!response.success) {
-    //         throw new Error(response.error || "Failed to delete product");
-    //     }
-    //     return true;
-    // },
+    delete: async (id: string) => {
+        const response = await deleteItem(id);
+        if (!response.success) {
+            throw new Error(response.error || "Failed to delete product");
+        }
+        return true;
+    },
 };

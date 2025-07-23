@@ -107,21 +107,21 @@ export function useCreateItem() {
 //   });
 // }
 
-// export function useDeleteProduct() {
-//   const queryClient = useQueryClient();
+export function useDeleteItem() {
+    const queryClient = useQueryClient();
 
-//   // Delete a product
-//   return useMutation({
-//     mutationFn: (id: string) => productAPI.delete(id),
-//     onSuccess: () => {
-//       toast.success("Product deleted successfully");
-//       // Invalidate products list to trigger a refetch
-//       queryClient.invalidateQueries({ queryKey: productKeys.lists() });
-//     },
-//     onError: (error: Error) => {
-//       toast.error("Failed to delete product", {
-//         description: error.message || "Unknown error occurred",
-//       });
-//     },
-//   });
-// }
+    // Delete a product
+    return useMutation({
+        mutationFn: (id: string) => itemAPI.delete(id),
+        onSuccess: () => {
+            toast.success("Item deleted successfully");
+            // Invalidate products list to trigger a refetch
+            queryClient.invalidateQueries({ queryKey: itemKeys.lists() });
+        },
+        onError: (error: Error) => {
+            toast.error("Failed to delete product", {
+                description: error.message || "Unknown error occurred",
+            });
+        },
+    });
+}

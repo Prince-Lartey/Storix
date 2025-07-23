@@ -25,7 +25,7 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useCreateItem, useOrgItems } from "@/hooks/useItemQueries";
+import { useCreateItem, useDeleteItem, useOrgItems } from "@/hooks/useItemQueries";
 import { BriefItemDTO, ItemCreateDTO } from "@/types/itemTypes";
 import ImageUploadButton from "@/components/FormInputs/ImageUploadButton";
 
@@ -49,7 +49,7 @@ export default function ItemListing({ title, orgId }: ItemListingProps) {
     const { items, refetch } = useOrgItems(orgId);
     const createItemMutation = useCreateItem();
     //   const updateProductMutation = useUpdateProduct();
-    //   const deleteProductMutation = useDeleteProduct();
+    const deleteItemMutation = useDeleteItem();
 
     // Local state
     const [formDialogOpen, setFormDialogOpen] = useState(false);
@@ -73,19 +73,19 @@ export default function ItemListing({ title, orgId }: ItemListingProps) {
     // Update form when current product changes
     useEffect(() => {
         if (!currentProduct) {
-        // Adding new - reset form
-        form.reset({
-            name: "",
-            sellingPrice: 0,
-            sku: "",
-            costPrice: 0,
-        });
+            // Adding new - reset form
+            form.reset({
+                name: "",
+                sellingPrice: 0,
+                sku: "",
+                costPrice: 0,
+            });
         } else {
-        // Editing existing - populate form
-        form.reset({
-            name: currentProduct.name,
-            sellingPrice: currentProduct.sellingPrice,
-        });
+            // Editing existing - populate form
+            form.reset({
+                name: currentProduct.name,
+                sellingPrice: currentProduct.sellingPrice,
+            });
         }
     }, [currentProduct, form]);
 
@@ -156,10 +156,10 @@ export default function ItemListing({ title, orgId }: ItemListingProps) {
     // };
 
     // Handle delete click
-    // const handleDeleteClick = (product: Product) => {
-    //     setProductToDelete(product);
-    //     setDeleteDialogOpen(true);
-    // };
+    const handleDeleteClick = (product: BriefItemDTO) => {
+        setProductToDelete(product);
+        setDeleteDialogOpen(true);
+    };
 
     // Handle form submission (edit or add)
     const onSubmit = async (data: ItemCreateDTO) => {
@@ -171,17 +171,17 @@ export default function ItemListing({ title, orgId }: ItemListingProps) {
             data.thumbnail = imageUrl;
 
             createItemMutation.mutate(data, {
-            onSuccess: () => {
-                // Only close dialog after successful submission
-                setFormDialogOpen(false);
-                form.reset();
-                setImageUrl("https://lxw8hao0qb.ufs.sh/f/43HGwtyufPQgRXjUTpesd9co1Cv0ntbLVkT6lFqUafhBr8mQ");
-            },
-            onError: (error) => {
-                // Handle error case - keep dialog open
-                console.error('Failed to create item:', error);
-            }
-        });
+                onSuccess: () => {
+                    // Only close dialog after successful submission
+                    setFormDialogOpen(false);
+                    form.reset();
+                    setImageUrl("https://lxw8hao0qb.ufs.sh/f/43HGwtyufPQgRXjUTpesd9co1Cv0ntbLVkT6lFqUafhBr8mQ");
+                },
+                onError: (error) => {
+                    // Handle error case - keep dialog open
+                    console.error('Failed to create item:', error);
+                }
+            });
         } else {
             // Edit existing product
             // updateProductMutation.mutate({
@@ -191,12 +191,22 @@ export default function ItemListing({ title, orgId }: ItemListingProps) {
         }
     };
 
+
     // Handle confirming delete
-    // const handleConfirmDelete = () => {
-    //     if (productToDelete) {
-    //         deleteProductMutation.mutate(productToDelete.id);
-    //     }
-    // };
+    const handleConfirmDelete = () => {
+        if (productToDelete) {
+            deleteItemMutation.mutate(productToDelete.id, {
+                onSuccess: () => {
+                    // Only close dialog after successful submission
+                    setDeleteDialogOpen(false);
+                },
+                onError: (error) => {
+                    // Handle error case - keep dialog open
+                    console.error('Failed to delete item:', error);
+                }
+            });
+        }
+    };
 
     // Calculate total products value
     const getTotalValue = (products: BriefItemDTO[]) => {
@@ -267,10 +277,10 @@ export default function ItemListing({ title, orgId }: ItemListingProps) {
                 renderRowActions={(item) => (
                     <TableActions.RowActions
                         // onEdit={() => handleEditClick(item)}
-                        // onDelete={() => handleDeleteClick(item)}
-                        // isDeleting={
-                        //     deleteProductMutation.isPending && productToDelete?.id === item.id
-                        // }
+                        onDelete={() => handleDeleteClick(item)}
+                        isDeleting={
+                            deleteItemMutation.isPending && productToDelete?.id === item.id
+                        }
                     />
                 )}
             />
@@ -341,39 +351,33 @@ export default function ItemListing({ title, orgId }: ItemListingProps) {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 items-center">
-                    
-                        <FormField
-                            control={form.control}
-                            name="sku"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Item SKU</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <Input placeholder="SKU-" className="" {...field} />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    
-                        <ImageUploadButton 
-                            title="Item Image"
-                            imageUrl={imageUrl} 
-                            setImageUrl={setImageUrl} 
-                            endpoint="itemImage"
-                        />
-                   
+                    <FormField
+                        control={form.control}
+                        name="sku"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Item SKU</FormLabel>
+                                <FormControl>
+                                    <div className="relative">
+                                        <Input placeholder="SKU-" className="" {...field} />
+                                    </div>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                
+                    <ImageUploadButton 
+                        title="Item Image"
+                        imageUrl={imageUrl} 
+                        setImageUrl={setImageUrl} 
+                        endpoint="itemImage"
+                    />
                 </div>
-                
-                
-
-                
             </EntityForm>
 
             {/* Delete Confirmation Dialog */}
-            {/* <ConfirmationDialog
+            <ConfirmationDialog
                 open={deleteDialogOpen}
                 onOpenChange={setDeleteDialogOpen}
                 title="Delete Product"
@@ -382,17 +386,17 @@ export default function ItemListing({ title, orgId }: ItemListingProps) {
                         <>
                             Are you sure you want to delete{" "}
                             <strong>{productToDelete.name}</strong> (
-                            {productToDelete.numberPlate})? This action cannot be undone.
+                            {productToDelete.id})? This action cannot be undone.
                         </>
                     ) : (
                         "Are you sure you want to delete this product?"
                     )
                 }
                 onConfirm={handleConfirmDelete}
-                isConfirming={deleteProductMutation.isPending}
+                isConfirming={deleteItemMutation.isPending}
                 confirmLabel="Delete"
                 variant="destructive"
-            /> */}
+            />
         </>
     );
 }

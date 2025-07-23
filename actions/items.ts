@@ -108,6 +108,26 @@ export async function getCategoryById(id: string) {
 
 export async function deleteItem(id: string) {
     try {
+        const item = await db.item.findUnique({
+            where: {
+                id,
+            },
+        });
+        if (!item) {
+            return {
+                success: false,
+                data: null,
+                error: "Item not found",
+            };
+        }
+        if (item.salesCount > 0) {
+            return {
+                success: false,
+                data: null,
+                error: "Cannot delete item with sales",
+            };
+        }
+
         const deletedItem = await db.item.delete({
             where: {
                 id,
@@ -115,11 +135,17 @@ export async function deleteItem(id: string) {
         });
 
         return {
-            ok: true,
+            success: true,
             data: deletedItem,
+            error: null
         };
     } catch (error) {
         console.log(error);
+        return {
+            success: false,
+            data: null,
+            error: "Failed to delete item",
+        };
     }
 }
 
