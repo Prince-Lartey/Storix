@@ -113,7 +113,7 @@ export default function DataTable<T>({
         const to = new Date(dateFilter.range.to);
 
         return items.filter((item) => {
-            const itemDate = new Date(filters.getItemDate(item));
+            const itemDate = filters && filters.getItemDate ? new Date(filters.getItemDate(item)) : new Date();
             return itemDate >= from && itemDate <= to;
         });
     };
@@ -227,7 +227,7 @@ export default function DataTable<T>({
                         additionalFilters={filters.additionalFilters}
                         onExport={
                         actions?.onExport
-                            ? () => actions.onExport(filteredData)
+                            ? () => actions && actions.onExport && actions.onExport(filteredData)
                             : undefined
                         }
                     />

@@ -112,6 +112,16 @@ model Organisation {
     taxRates           TaxRate[]
     suppliers          Supplier[]
     locations          Location[]
+    apiKeys            ApiKey[]
+}
+
+model ApiKey {
+    id           String       @id @default(cuid())
+    orgId        String
+    name         String     
+    key          String       @unique
+    org Organisation @relation(fields: [orgId], references: [id], onDelete: Cascade)
+    createdAt    DateTime     @default(now())
 }
 
 enum LocationType {
