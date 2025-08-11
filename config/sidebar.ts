@@ -221,21 +221,21 @@ export const sidebarLinks: ISidebarLink[] = [
     href: "/dashboard/integrations/pos",
     permission: "integrations.read",
     dropdownMenu: [
-      {
-        title: "POS Integration",
-        href: "/dashboard/integrations/pos",
-        permission: "pos_integration.read",
-      },
-      {
-        title: "Accounting Integration",
-        href: "/dashboard/integrations/accounting",
-        permission: "accounting_integration.read",
-      },
-      {
-        title: "API Settings",
-        href: "/dashboard/integrations/api-settings",
-        permission: "api_settings.read",
-      },
+        {
+            title: "POS Integration",
+            href: "/dashboard/integrations/pos",
+            permission: "pos_integration.read",
+        },
+        {
+            title: "Accounting Integration",
+            href: "/dashboard/integrations/accounting",
+            permission: "accounting_integration.read",
+        },
+        {
+            title: "API Management",
+            href: "/dashboard/integrations/api",
+            permission: "api_settings.read",
+        },
     ],
   },
 

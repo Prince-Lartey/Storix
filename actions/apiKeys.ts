@@ -1,3 +1,5 @@
+"use server"
+
 import { getAuthenticatedUser } from "@/config/useAuth";
 import { generateApiKey } from "@/lib/generateApiKeys";
 import { db } from "@/prisma/db";
@@ -54,6 +56,39 @@ export async function createApiKey(name: string) {
             success: false,
             data: null,
             error: "Something went wrong",
+        };
+    }
+}
+
+export async function getOrgApiKeys(orgId: string) {
+    try {
+        const keys = await db.apiKey.findMany({
+        orderBy: {
+            createdAt: "desc",
+        },
+        });
+        return keys;
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
+}
+
+export async function deleteApiKey(id: string) {
+    try {
+        await db.apiKey.delete({
+            where: {
+                id,
+            },
+        });
+        revalidatePath("/dashboard/integrations/api");
+        return {
+            success: true,
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            success: false,
         };
     }
 }
